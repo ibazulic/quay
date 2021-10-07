@@ -131,12 +131,13 @@ case "$QUAYENTRY" in
             echo "Running services ${QUAY_SERVICES}"
         fi
         echo "Generating temporary keys for registry operations..."
-        ${QUAYCONF}/init/readonly/generate_keys.sh
+        /bin/sh ${QUAYCONF}/init/readonly/readonly.sh
         for f in "${QUAYCONF}"/init/*.sh; do
             echo "Running init script '$f'"
             "$f" || exit
         done
         exec supervisord -c "${QUAYCONF}/supervisord.conf" 2>&1
+        ;;
     *)
         echo "Running '$QUAYENTRY'"
         eval exec "$@"
