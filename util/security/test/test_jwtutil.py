@@ -18,10 +18,7 @@ from util.security.jwtutil import (
 
 @pytest.fixture(scope="session")
 def private_key():
-    return rsa.generate_private_key(
-        public_exponent=65537,
-        key_size=2048,
-    )
+    return rsa.generate_private_key(public_exponent=65537, key_size=2048,)
 
 
 @pytest.fixture(scope="session")
@@ -36,8 +33,7 @@ def private_key_pem(private_key):
 @pytest.fixture(scope="session")
 def public_key(private_key):
     return private_key.public_key().public_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PublicFormat.SubjectPublicKeyInfo,
+        encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo,
     )
 
 
@@ -169,10 +165,7 @@ def test_decode_jwt_invalid_key(private_key_pem):
 
     # Try to decode with a different public key.
     another_public_key = (
-        rsa.generate_private_key(
-            public_exponent=65537,
-            key_size=2048,
-        )
+        rsa.generate_private_key(public_exponent=65537, key_size=2048,)
         .public_key()
         .public_bytes(
             encoding=serialization.Encoding.PEM,

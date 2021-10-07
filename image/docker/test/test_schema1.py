@@ -160,23 +160,12 @@ def test_validate_manifest_with_unencoded_unicode():
 
 
 @pytest.mark.parametrize(
-    "with_key",
-    [
-        None,
-        docker_v2_signing_key,
-    ],
+    "with_key", [None, docker_v2_signing_key,],
 )
 def test_build_unencoded_unicode_manifest(with_key):
     builder = DockerSchema1ManifestBuilder("somenamespace", "somerepo", "sometag")
     builder.add_layer(
-        "sha256:abcde",
-        json.dumps(
-            {
-                "id": "someid",
-                "author": "Sômé guy",
-            },
-            ensure_ascii=False,
-        ),
+        "sha256:abcde", json.dumps({"id": "someid", "author": "Sômé guy",}, ensure_ascii=False,),
     )
 
     built = builder.build(with_key, ensure_ascii=False)
@@ -198,23 +187,12 @@ def test_validate_manifest_known_issue():
 
 
 @pytest.mark.parametrize(
-    "with_key",
-    [
-        None,
-        docker_v2_signing_key,
-    ],
+    "with_key", [None, docker_v2_signing_key,],
 )
 def test_validate_manifest_with_emoji(with_key):
     builder = DockerSchema1ManifestBuilder("somenamespace", "somerepo", "sometag")
     builder.add_layer(
-        "sha256:abcde",
-        json.dumps(
-            {
-                "id": "someid",
-                "author": "😱",
-            },
-            ensure_ascii=False,
-        ),
+        "sha256:abcde", json.dumps({"id": "someid", "author": "😱",}, ensure_ascii=False,),
     )
 
     built = builder.build(with_key, ensure_ascii=False)
@@ -226,11 +204,7 @@ def test_validate_manifest_with_emoji(with_key):
 
 
 @pytest.mark.parametrize(
-    "with_key",
-    [
-        None,
-        docker_v2_signing_key,
-    ],
+    "with_key", [None, docker_v2_signing_key,],
 )
 def test_validate_manifest_with_none_metadata_layer(with_key):
     builder = DockerSchema1ManifestBuilder("somenamespace", "somerepo", "sometag")
@@ -256,11 +230,7 @@ def test_build_with_metadata_removed():
                 "comment": "hello world!",
                 "created": "1975-01-02 12:34",
                 "Size": 5678,
-                "container_config": {
-                    "Cmd": "foobar",
-                    "more": "stuff",
-                    "goes": "here",
-                },
+                "container_config": {"Cmd": "foobar", "more": "stuff", "goes": "here",},
             }
         ),
     )
@@ -272,11 +242,7 @@ def test_build_with_metadata_removed():
                 "author": "😱",
                 "created": "1985-02-03 12:34",
                 "Size": 1234,
-                "container_config": {
-                    "Cmd": "barbaz",
-                    "more": "stuff",
-                    "goes": "here",
-                },
+                "container_config": {"Cmd": "barbaz", "more": "stuff", "goes": "here",},
             }
         ),
     )

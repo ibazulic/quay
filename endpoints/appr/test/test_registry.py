@@ -38,12 +38,7 @@ def test_login(login_data, expected_code, app, client):
 
 
 @pytest.mark.parametrize(
-    "release_name",
-    [
-        "1.0",
-        "1",
-        1,
-    ],
+    "release_name", ["1.0", "1", 1,],
 )
 def test_invalid_release_name(release_name, app, client):
     params = {
@@ -65,11 +60,7 @@ def test_invalid_release_name(release_name, app, client):
 
 
 @pytest.mark.parametrize(
-    "readonly, expected_status",
-    [
-        (True, 405),
-        (False, 422),
-    ],
+    "readonly, expected_status", [(True, 405), (False, 422),],
 )
 def test_readonly(readonly, expected_status, app, client):
     params = {

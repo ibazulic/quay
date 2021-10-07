@@ -135,8 +135,7 @@ class _CloudStorage(BaseStorageV2):
         self._list_object_version = _LIST_OBJECT_VERSIONS["v2"]
 
         self._session = self._connection_class(
-            aws_access_key_id=self._access_key,
-            aws_secret_access_key=self._secret_key,
+            aws_access_key_id=self._access_key, aws_secret_access_key=self._secret_key,
         )
 
     def _initialize_cloud_conn(self):
@@ -239,9 +238,7 @@ class _CloudStorage(BaseStorageV2):
             client_method = "head_object"
 
         return self.get_cloud_conn().generate_presigned_url(
-            client_method,
-            Params={"Bucket": self._bucket_name, "Key": path},
-            ExpiresIn=expires_in,
+            client_method, Params={"Bucket": self._bucket_name, "Key": path}, ExpiresIn=expires_in,
         )
 
     def get_direct_upload_url(self, path, mime_type, requires_cors=True):
@@ -362,10 +359,7 @@ class _CloudStorage(BaseStorageV2):
 
                     buf.seek(0)
                     part = mp.Part(num_part)
-                    part_upload = part.upload(
-                        Body=buf,
-                        ContentLength=bytes_staged,
-                    )
+                    part_upload = part.upload(Body=buf, ContentLength=bytes_staged,)
                     upload_parts.append(_PartUpload(num_part, part_upload["ETag"]))
                     total_bytes_written += bytes_staged
                     num_part += 1
@@ -1023,8 +1017,7 @@ class CloudFrontedS3Storage(S3Storage):
             return None
 
         with self._context.config_provider.get_volume_file(
-            cloudfront_privatekey_filename,
-            mode="rb",
+            cloudfront_privatekey_filename, mode="rb",
         ) as key_file:
             return serialization.load_pem_private_key(
                 key_file.read(), password=None, backend=default_backend()

@@ -91,9 +91,7 @@ class BuildTrigger(RepositoryParamResource):
         "UpdateTrigger": {
             "type": "object",
             "description": "Options for updating a build trigger",
-            "required": [
-                "enabled",
-            ],
+            "required": ["enabled",],
             "properties": {
                 "enabled": {
                     "type": "boolean",
@@ -186,10 +184,7 @@ class BuildTriggerSubdirs(RepositoryParamResource):
     """
 
     schemas = {
-        "BuildTriggerSubdirRequest": {
-            "type": "object",
-            "description": "Arbitrary json.",
-        },
+        "BuildTriggerSubdirRequest": {"type": "object", "description": "Arbitrary json.",},
     }
 
     @require_repo_admin
@@ -247,10 +242,7 @@ class BuildTriggerActivate(RepositoryParamResource):
             "type": "object",
             "required": ["config"],
             "properties": {
-                "config": {
-                    "type": "object",
-                    "description": "Arbitrary json.",
-                },
+                "config": {"type": "object", "description": "Arbitrary json.",},
                 "pull_robot": {
                     "type": "string",
                     "description": "The name of the robot that will be used to pull images.",
@@ -361,12 +353,7 @@ class BuildTriggerAnalyze(RepositoryParamResource):
         "BuildTriggerAnalyzeRequest": {
             "type": "object",
             "required": ["config"],
-            "properties": {
-                "config": {
-                    "type": "object",
-                    "description": "Arbitrary json.",
-                }
-            },
+            "properties": {"config": {"type": "object", "description": "Arbitrary json.",}},
         },
     }
 

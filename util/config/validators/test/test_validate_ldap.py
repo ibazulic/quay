@@ -12,11 +12,7 @@ from app import config_provider
 
 
 @pytest.mark.parametrize(
-    "unvalidated_config",
-    [
-        ({}),
-        ({"AUTHENTICATION_TYPE": "Database"}),
-    ],
+    "unvalidated_config", [({}), ({"AUTHENTICATION_TYPE": "Database"}),],
 )
 def test_validate_noop(unvalidated_config, app):
     config = ValidatorContext(unvalidated_config, config_provider=config_provider)
@@ -25,10 +21,7 @@ def test_validate_noop(unvalidated_config, app):
 
 @pytest.mark.parametrize(
     "unvalidated_config",
-    [
-        ({"AUTHENTICATION_TYPE": "LDAP"}),
-        ({"AUTHENTICATION_TYPE": "LDAP", "LDAP_ADMIN_DN": "foo"}),
-    ],
+    [({"AUTHENTICATION_TYPE": "LDAP"}), ({"AUTHENTICATION_TYPE": "LDAP", "LDAP_ADMIN_DN": "foo"}),],
 )
 def test_invalid_config(unvalidated_config, app):
     with pytest.raises(ConfigValidationException):
@@ -37,12 +30,7 @@ def test_invalid_config(unvalidated_config, app):
 
 
 @pytest.mark.parametrize(
-    "uri",
-    [
-        "foo",
-        "http://foo",
-        "ldap:foo",
-    ],
+    "uri", ["foo", "http://foo", "ldap:foo",],
 )
 def test_invalid_uri(uri, app):
     config = {}

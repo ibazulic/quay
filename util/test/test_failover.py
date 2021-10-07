@@ -33,11 +33,7 @@ def my_failover_func(i, should_raise=None):
 
 
 @pytest.mark.parametrize(
-    "stop_on,exception",
-    [
-        (10, None),
-        (5, IndexError),
-    ],
+    "stop_on,exception", [(10, None), (5, IndexError),],
 )
 def test_readonly_failover(stop_on, exception):
     """

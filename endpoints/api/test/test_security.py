@@ -449,14 +449,7 @@ SECURITY_TESTS = [
         "freshuser",
         400,
     ),
-    (
-        User,
-        "POST",
-        None,
-        {"username": "T946", "password": "0SG4", "email": "MENT"},
-        "reader",
-        400,
-    ),
+    (User, "POST", None, {"username": "T946", "password": "0SG4", "email": "MENT"}, "reader", 400,),
     (User, "PUT", None, {}, None, 401),
     (User, "PUT", None, {}, "devtable", 200),
     (User, "PUT", None, {}, "freshuser", 200),
@@ -5782,25 +5775,13 @@ def test_all_apis_tested(app):
 
 
 @pytest.mark.parametrize(
-    "is_superuser",
-    [
-        (True),
-        (False),
-    ],
+    "is_superuser", [(True), (False),],
 )
 @pytest.mark.parametrize(
-    "allow_nonsuperuser",
-    [
-        (True),
-        (False),
-    ],
+    "allow_nonsuperuser", [(True), (False),],
 )
 @pytest.mark.parametrize(
-    "method, expected",
-    [
-        ("POST", 400),
-        ("DELETE", 200),
-    ],
+    "method, expected", [("POST", 400), ("DELETE", 200),],
 )
 def test_team_sync_security(is_superuser, allow_nonsuperuser, method, expected, client):
     def is_superuser_method(_):

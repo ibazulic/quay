@@ -35,11 +35,7 @@ def combined_model():
 
 def es_model():
     return DocumentLogsModel(
-        producer="elasticsearch",
-        elasticsearch_config={
-            "host": FAKE_ES_HOST,
-            "port": 12345,
-        },
+        producer="elasticsearch", elasticsearch_config={"host": FAKE_ES_HOST, "port": 12345,},
     )
 
 

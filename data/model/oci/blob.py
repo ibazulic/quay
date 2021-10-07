@@ -23,8 +23,7 @@ def _lookup_blob_uploaded(repository, blob_digest):
             ImageStorage.select(ImageStorage.uuid)
             .join(UploadedBlob)
             .where(
-                UploadedBlob.repository == repository,
-                ImageStorage.content_checksum == blob_digest,
+                UploadedBlob.repository == repository, ImageStorage.content_checksum == blob_digest,
             )
             .get()
         )
@@ -38,8 +37,7 @@ def _lookup_blob_in_repository(repository, blob_digest):
             ImageStorage.select(ImageStorage.uuid)
             .join(ManifestBlob)
             .where(
-                ManifestBlob.repository == repository,
-                ImageStorage.content_checksum == blob_digest,
+                ManifestBlob.repository == repository, ImageStorage.content_checksum == blob_digest,
             )
             .get()
         )

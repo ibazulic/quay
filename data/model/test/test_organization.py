@@ -7,11 +7,7 @@ from test.fixtures import *
 
 
 @pytest.mark.parametrize(
-    "deleted",
-    [
-        (True),
-        (False),
-    ],
+    "deleted", [(True), (False),],
 )
 def test_get_organizations(deleted, initialized_db):
     # Delete an org.

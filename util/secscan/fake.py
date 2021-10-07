@@ -242,11 +242,7 @@ class FakeSecurityScanner(object):
 
             return {
                 "status_code": 201,
-                "content": json.dumps(
-                    {
-                        "Layer": self.layers[layer["Name"]],
-                    }
-                ),
+                "content": json.dumps({"Layer": self.layers[layer["Name"]],}),
             }
 
         @urlmatch(netloc=r"(.*\.)?" + self.hostname, path=r"/v1/metrics$", method="GET")

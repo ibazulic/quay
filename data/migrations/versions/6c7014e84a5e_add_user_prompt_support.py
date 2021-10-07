@@ -39,10 +39,7 @@ def upgrade(op, tables, tester):
     ### end Alembic commands ###
 
     op.bulk_insert(
-        tables.userpromptkind,
-        [
-            {"name": "confirm_username"},
-        ],
+        tables.userpromptkind, [{"name": "confirm_username"},],
     )
 
     # ### population of test data ### #

@@ -123,6 +123,20 @@ case "$QUAYENTRY" in
         done
         exec supervisord -c "${QUAYCONF}/supervisord.conf" 2>&1
         ;;
+    "readonly")
+        echo "Starting Quay in read only mode..."
+        if [ -z "${QUAY_SERVICES}" ]; then
+            echo "Running all default registry services"
+        else
+            echo "Running services ${QUAY_SERVICES}"
+        fi
+        echo "Generating temporary keys for registry operations..."
+        ${QUAYCONF}/init/readonly/generate_keys.sh
+        for f in "${QUAYCONF}"/init/*.sh; do
+            echo "Running init script '$f'"
+            "$f" || exit
+        done
+        exec supervisord -c "${QUAYCONF}/supervisord.conf" 2>&1
     *)
         echo "Running '$QUAYENTRY'"
         eval exec "$@"

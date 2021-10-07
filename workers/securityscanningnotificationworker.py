@@ -88,8 +88,7 @@ class SecurityScanningNotificationWorker(QueueWorker):
                             manifest.repository
                         ):
                             severity = PRIORITY_LEVELS.get(
-                                severity_name,
-                                PRIORITY_LEVELS["Critical"],
+                                severity_name, PRIORITY_LEVELS["Critical"],
                             )
 
                             if lowest_severity["score"] > severity["score"]:

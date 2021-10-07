@@ -23,10 +23,7 @@ def upgrade(op, tables, tester):
     )
     ### end Alembic commands ###
     op.bulk_insert(
-        tables.logentrykind,
-        [
-            {"name": "change_repo_trust"},
-        ],
+        tables.logentrykind, [{"name": "change_repo_trust"},],
     )
 
     # ### population of test data ### #

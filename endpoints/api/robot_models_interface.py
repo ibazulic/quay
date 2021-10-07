@@ -86,14 +86,7 @@ class RobotWithPermissions(
 class Robot(
     namedtuple(
         "Robot",
-        [
-            "name",
-            "password",
-            "created",
-            "last_accessed",
-            "description",
-            "unstructured_metadata",
-        ],
+        ["name", "password", "created", "last_accessed", "description", "unstructured_metadata",],
     )
 ):
     """

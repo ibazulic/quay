@@ -7,11 +7,7 @@ from test.fixtures import *
 
 
 @pytest.mark.parametrize(
-    "disabled",
-    [
-        (True),
-        (False),
-    ],
+    "disabled", [(True), (False),],
 )
 def test_list_all_users(disabled, client):
     with client_with_identity("devtable", client) as cl:

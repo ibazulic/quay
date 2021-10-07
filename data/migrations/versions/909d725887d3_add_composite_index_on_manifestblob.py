@@ -15,9 +15,7 @@ import sqlalchemy as sa
 
 def upgrade(op, tables, tester):
     op.create_index(
-        "manifestblob_repository_id_blob_id",
-        "manifestblob",
-        ["repository_id", "blob_id"],
+        "manifestblob_repository_id_blob_id", "manifestblob", ["repository_id", "blob_id"],
     )
 
 

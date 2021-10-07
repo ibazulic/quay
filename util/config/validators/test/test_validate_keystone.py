@@ -10,11 +10,7 @@ from test.fixtures import *
 
 
 @pytest.mark.parametrize(
-    "unvalidated_config",
-    [
-        ({}),
-        ({"AUTHENTICATION_TYPE": "Database"}),
-    ],
+    "unvalidated_config", [({}), ({"AUTHENTICATION_TYPE": "Database"}),],
 )
 def test_validate_noop(unvalidated_config, app):
     KeystoneValidator.validate(ValidatorContext(unvalidated_config))

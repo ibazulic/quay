@@ -14,11 +14,7 @@ from test.fixtures import *
 
 
 @pytest.mark.parametrize(
-    "endpoint",
-    [
-        UserRobot,
-        OrgRobot,
-    ],
+    "endpoint", [UserRobot, OrgRobot,],
 )
 @pytest.mark.parametrize(
     "body",
@@ -43,13 +39,7 @@ def test_create_robot_with_metadata(endpoint, body, client):
 
         # Ensure the create succeeded.
         resp = conduct_api_call(
-            cl,
-            endpoint,
-            "GET",
-            {
-                "orgname": "buynlarge",
-                "robot_shortname": "somebot",
-            },
+            cl, endpoint, "GET", {"orgname": "buynlarge", "robot_shortname": "somebot",},
         )
 
         body = body or {}
@@ -72,25 +62,13 @@ def test_retrieve_robot(endpoint, params, app, client):
 
 @pytest.mark.parametrize(
     "endpoint, params, bot_endpoint",
-    [
-        (UserRobotList, {}, UserRobot),
-        (OrgRobotList, {"orgname": "buynlarge"}, OrgRobot),
-    ],
+    [(UserRobotList, {}, UserRobot), (OrgRobotList, {"orgname": "buynlarge"}, OrgRobot),],
 )
 @pytest.mark.parametrize(
-    "include_token",
-    [
-        True,
-        False,
-    ],
+    "include_token", [True, False,],
 )
 @pytest.mark.parametrize(
-    "limit",
-    [
-        None,
-        1,
-        5,
-    ],
+    "limit", [None, 1, 5,],
 )
 def test_retrieve_robots(endpoint, params, bot_endpoint, include_token, limit, app, client):
     params["token"] = "true" if include_token else "false"
@@ -114,18 +92,10 @@ def test_retrieve_robots(endpoint, params, bot_endpoint, include_token, limit, a
 
 
 @pytest.mark.parametrize(
-    "username, is_admin",
-    [
-        ("devtable", True),
-        ("reader", False),
-    ],
+    "username, is_admin", [("devtable", True), ("reader", False),],
 )
 @pytest.mark.parametrize(
-    "with_permissions",
-    [
-        True,
-        False,
-    ],
+    "with_permissions", [True, False,],
 )
 def test_retrieve_robots_token_permission(username, is_admin, with_permissions, app, client):
     with client_with_identity(username, client) as cl:

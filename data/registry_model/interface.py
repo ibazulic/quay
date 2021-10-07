@@ -55,11 +55,7 @@ class RegistryDataInterface(object):
 
     @abstractmethod
     def lookup_manifest_by_digest(
-        self,
-        repository_ref,
-        manifest_digest,
-        allow_dead=False,
-        require_available=False,
+        self, repository_ref, manifest_digest, allow_dead=False, require_available=False,
     ):
         """
         Looks up the manifest with the given digest under the given repository and returns it or

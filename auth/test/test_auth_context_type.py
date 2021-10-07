@@ -25,11 +25,7 @@ def get_oauth_token(_):
     ],
 )
 @pytest.mark.parametrize(
-    "v1_dict_format",
-    [
-        (True),
-        (False),
-    ],
+    "v1_dict_format", [(True), (False),],
 )
 def test_signed_auth_context(kind, entity_reference, loader, v1_dict_format, initialized_db):
     if kind == ContextEntityKind.anonymous:

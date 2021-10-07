@@ -6,10 +6,7 @@ from util.config.validators.validate_timemachine import TimeMachineValidator
 
 
 @pytest.mark.parametrize(
-    "unvalidated_config",
-    [
-        ({}),
-    ],
+    "unvalidated_config", [({}),],
 )
 def test_validate_noop(unvalidated_config):
     TimeMachineValidator.validate(ValidatorContext(unvalidated_config))

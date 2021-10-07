@@ -13,11 +13,7 @@ from app import config_provider
 
 
 @pytest.mark.parametrize(
-    "unvalidated_config",
-    [
-        ({}),
-        ({"AUTHENTICATION_TYPE": "Database"}),
-    ],
+    "unvalidated_config", [({}), ({"AUTHENTICATION_TYPE": "Database"}),],
 )
 def test_validate_noop(unvalidated_config, app):
     config = ValidatorContext(unvalidated_config)

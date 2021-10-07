@@ -54,11 +54,7 @@ def test_notification(issue, initialized_db):
             {
                 "normalized_severity": "High",
                 "description": "Some description",
-                "package": {
-                    "id": "42",
-                    "name": "FooBar",
-                    "version": "v0.0.1",
-                },
+                "package": {"id": "42", "name": "FooBar", "version": "v0.0.1",},
                 "name": "BarBaz",
                 "links": "http://example.com",
             },
@@ -67,8 +63,7 @@ def test_notification(issue, initialized_db):
         # Add the notification to the queue.
         name = ["with_id", notification_id]
         secscan_notification_queue.put(
-            name,
-            json.dumps({"notification_id": notification_id}),
+            name, json.dumps({"notification_id": notification_id}),
         )
 
         # Process the notification via the worker.

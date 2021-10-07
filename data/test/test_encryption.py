@@ -33,11 +33,7 @@ from data.encryption import FieldEncrypter, _VERSIONS, DecryptionFailureExceptio
     ],
 )
 @pytest.mark.parametrize(
-    "use_valid_key",
-    [
-        True,
-        False,
-    ],
+    "use_valid_key", [True, False,],
 )
 def test_encryption(test_data, version, secret_key, use_valid_key):
     encrypter = FieldEncrypter(secret_key, version)

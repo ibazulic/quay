@@ -125,10 +125,7 @@ def upgrade(op, tables, tester):
     # ### end Alembic commands ###
 
     op.bulk_insert(
-        tables.tagkind,
-        [
-            {"name": "tag"},
-        ],
+        tables.tagkind, [{"name": "tag"},],
     )
 
     # ### population of test data ### #

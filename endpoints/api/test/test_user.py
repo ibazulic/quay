@@ -52,11 +52,7 @@ def test_user_metadata_update(client):
             400,
             True,
             True,
-            {
-                "username": "nonemptydb",
-                "password": "password",
-                "email": "someone@somewhere.com",
-            },
+            {"username": "nonemptydb", "password": "password", "email": "someone@somewhere.com",},
         ),
         # Empty database with mailing succeeds
         (
@@ -64,34 +60,12 @@ def test_user_metadata_update(client):
             200,
             True,
             True,
-            {
-                "username": "emptydbemail",
-                "password": "password",
-                "email": "someone@somewhere.com",
-            },
+            {"username": "emptydbemail", "password": "password", "email": "someone@somewhere.com",},
         ),
         # Empty database without mailing succeeds
-        (
-            0,
-            200,
-            False,
-            True,
-            {
-                "username": "emptydbnoemail",
-                "password": "password",
-            },
-        ),
+        (0, 200, False, True, {"username": "emptydbnoemail", "password": "password",},),
         # Empty database with mailing missing email fails
-        (
-            0,
-            400,
-            True,
-            True,
-            {
-                "username": "emptydbbademail",
-                "password": "password",
-            },
-        ),
+        (0, 400, True, True, {"username": "emptydbbademail", "password": "password",},),
         # Empty database with access token
         (
             0,

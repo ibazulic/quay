@@ -1203,12 +1203,7 @@ def mark_namespace_for_deletion(user, queues, namespace_gc_queue, force=False):
     # Add a queueitem to delete the namespace.
     marker.queue_id = namespace_gc_queue.put(
         [str(user.id)],
-        json.dumps(
-            {
-                "marker_id": marker.id,
-                "original_username": original_username,
-            }
-        ),
+        json.dumps({"marker_id": marker.id, "original_username": original_username,}),
     )
     marker.save()
     return marker.id

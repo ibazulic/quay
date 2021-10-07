@@ -6,11 +6,7 @@ from endpoints.v2 import v2_bp
 
 
 @pytest.mark.parametrize(
-    "blueprint",
-    [
-        v2_bp,
-        v1_bp,
-    ],
+    "blueprint", [v2_bp, v1_bp,],
 )
 def test_verify_blueprint(blueprint):
     class Checker(object):

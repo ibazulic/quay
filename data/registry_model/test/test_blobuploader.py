@@ -28,20 +28,10 @@ def registry_model(initialized_db):
 
 
 @pytest.mark.parametrize(
-    "chunk_count",
-    [
-        0,
-        1,
-        2,
-        10,
-    ],
+    "chunk_count", [0, 1, 2, 10,],
 )
 @pytest.mark.parametrize(
-    "subchunk",
-    [
-        True,
-        False,
-    ],
+    "subchunk", [True, False,],
 )
 def test_basic_upload_blob(chunk_count, subchunk, registry_model):
     repository_ref = registry_model.lookup_repository("devtable", "complex")

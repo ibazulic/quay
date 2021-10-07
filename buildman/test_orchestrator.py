@@ -130,33 +130,21 @@ def test_on_key_change(orchestrator):
     orchestrator.set_key(slash_join(key_prefix, "key1"), "test_val")
     time.sleep(0.1)
     mock_callback.meth.assert_called_with(
-        KeyChange(
-            KeyEvent.CREATE,
-            slash_join(key_prefix, "key1"),
-            "test_val",
-        )
+        KeyChange(KeyEvent.CREATE, slash_join(key_prefix, "key1"), "test_val",)
     )
 
     # SET
     orchestrator.set_key(slash_join(key_prefix, "key1"), "test_val", overwrite=True)
     time.sleep(0.1)
     mock_callback.meth.assert_called_with(
-        KeyChange(
-            KeyEvent.SET,
-            slash_join(key_prefix, "key1"),
-            "test_val",
-        )
+        KeyChange(KeyEvent.SET, slash_join(key_prefix, "key1"), "test_val",)
     )
 
     # DELETE
     orchestrator.delete_key(slash_join(key_prefix, "key1"))
     time.sleep(0.1)
     mock_callback.meth.assert_called_with(
-        KeyChange(
-            KeyEvent.DELETE,
-            slash_join(key_prefix, "key1"),
-            "test_val",
-        )
+        KeyChange(KeyEvent.DELETE, slash_join(key_prefix, "key1"), "test_val",)
     )
 
 

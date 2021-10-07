@@ -236,10 +236,7 @@ def upgrade(op, tables, tester):
 
     for media_type in DOCKER_SCHEMA1_CONTENT_TYPES:
         op.bulk_insert(
-            tables.mediatype,
-            [
-                {"name": media_type},
-            ],
+            tables.mediatype, [{"name": media_type},],
         )
 
     # ### population of test data ### #

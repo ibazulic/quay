@@ -40,10 +40,7 @@ class BuildManagerServicer(buildman_pb2_grpc.BuildManagerServicer):
         or an error message if there was an exception decoding the token."""
         msg = None
         try:
-            decoded_token = self._lifecycle_manager.verify_build_token(
-                token,
-                token_type,
-            )
+            decoded_token = self._lifecycle_manager.verify_build_token(token, token_type,)
         except InvalidBuildTokenException as ibte:
             msg = "Invalid build token: %s" % ibte
             return (None, msg)
@@ -60,8 +57,7 @@ class BuildManagerServicer(buildman_pb2_grpc.BuildManagerServicer):
     def RegisterBuildJob(self, request, context):
         """Registers a build job, returning a buildpack."""
         decoded_token, msg = self._decode_build_token(
-            request.register_jwt,
-            BUILD_JOB_REGISTRATION_TYPE,
+            request.register_jwt, BUILD_JOB_REGISTRATION_TYPE,
         )
         if not decoded_token:
             self._handle_error(context, grpc.StatusCode.UNAUTHENTICATED, msg)
@@ -85,9 +81,7 @@ class BuildManagerServicer(buildman_pb2_grpc.BuildManagerServicer):
             pull_token=build_args.get("pull_token", ""),
             push_token=build_args.get("push_token", ""),
             tag_names=build_args.get("tag_names", ""),
-            base_image=buildman_pb2.BuildPack.BaseImage(
-                **build_args.get("base_image", {}),
-            ),
+            base_image=buildman_pb2.BuildPack.BaseImage(**build_args.get("base_image", {}),),
         )
 
         git_package = build_args.get("git")
@@ -107,10 +101,7 @@ class BuildManagerServicer(buildman_pb2_grpc.BuildManagerServicer):
     def Heartbeat(self, request_iterator, context):
         """Updates the last heartbeat."""
         for req in request_iterator:
-            decoded_token, msg = self._decode_build_token(
-                req.job_jwt,
-                BUILD_JOB_TOKEN_TYPE,
-            )
+            decoded_token, msg = self._decode_build_token(req.job_jwt, BUILD_JOB_TOKEN_TYPE,)
             if not decoded_token:
                 self._handle_error(context, grpc.StatusCode.UNAUTHENTICATED, msg)
                 return buildman_pb2.HeartbeatResponse()
@@ -122,10 +113,7 @@ class BuildManagerServicer(buildman_pb2_grpc.BuildManagerServicer):
 
     def SetPhase(self, request, context):
         """Update the job phase."""
-        decoded_token, msg = self._decode_build_token(
-            request.job_jwt,
-            BUILD_JOB_TOKEN_TYPE,
-        )
+        decoded_token, msg = self._decode_build_token(request.job_jwt, BUILD_JOB_TOKEN_TYPE,)
         if not decoded_token:
             self._handle_error(context, grpc.StatusCode.UNAUTHENTICATED, msg)
             return buildman_pb2.SetPhaseResponse()
@@ -138,9 +126,7 @@ class BuildManagerServicer(buildman_pb2_grpc.BuildManagerServicer):
             )
 
         updated = self._lifecycle_manager.update_job_phase(
-            job_id,
-            self.GRPC_PHASE_TO_BUILD_PHASE[request.phase],
-            phase_metadata,
+            job_id, self.GRPC_PHASE_TO_BUILD_PHASE[request.phase], phase_metadata,
         )
         return buildman_pb2.SetPhaseResponse(
             success=updated, sequence_number=request.sequence_number
@@ -150,10 +136,7 @@ class BuildManagerServicer(buildman_pb2_grpc.BuildManagerServicer):
         """Tails log messages to build logs"""
         last_sequence_number = None
         for req in request_iterator:
-            decoded_token, msg = self._decode_build_token(
-                req.job_jwt,
-                BUILD_JOB_TOKEN_TYPE,
-            )
+            decoded_token, msg = self._decode_build_token(req.job_jwt, BUILD_JOB_TOKEN_TYPE,)
             if not decoded_token:
                 self._handle_error(context, grpc.StatusCode.UNAUTHENTICATED, msg)
                 return buildman_pb2.LogMessageResponse()
@@ -177,10 +160,7 @@ class BuildManagerServicer(buildman_pb2_grpc.BuildManagerServicer):
                 last_sequence_number = sequence_number
 
     def DetermineCachedTag(self, request, context):
-        decoded_token, msg = self._decode_build_token(
-            request.job_jwt,
-            BUILD_JOB_TOKEN_TYPE,
-        )
+        decoded_token, msg = self._decode_build_token(request.job_jwt, BUILD_JOB_TOKEN_TYPE,)
         if not decoded_token:
             self._handle_error(context, grpc.StatusCode.UNAUTHENTICATED, msg)
             return buildman_pb2.CachedTag()

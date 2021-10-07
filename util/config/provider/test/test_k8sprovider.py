@@ -119,12 +119,7 @@ def test_basic_config(tmpdir_factory):
 
 
 @pytest.mark.parametrize(
-    "filepath",
-    [
-        "foo",
-        "foo/meh",
-        "foo/bar/baz",
-    ],
+    "filepath", ["foo", "foo/meh", "foo/bar/baz",],
 )
 def test_remove_file(filepath, tmpdir_factory):
     basic_files = {

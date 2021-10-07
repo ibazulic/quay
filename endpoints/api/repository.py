@@ -83,23 +83,13 @@ class RepositoryList(ApiResource):
         "NewRepo": {
             "type": "object",
             "description": "Description of a new repository",
-            "required": [
-                "repository",
-                "visibility",
-                "description",
-            ],
+            "required": ["repository", "visibility", "description",],
             "properties": {
-                "repository": {
-                    "type": "string",
-                    "description": "Repository name",
-                },
+                "repository": {"type": "string", "description": "Repository name",},
                 "visibility": {
                     "type": "string",
                     "description": "Visibility which the repository will start with",
-                    "enum": [
-                        "public",
-                        "private",
-                    ],
+                    "enum": ["public", "private",],
                 },
                 "namespace": {
                     "type": "string",
@@ -175,11 +165,7 @@ class RepositoryList(ApiResource):
                 {"repo": repository_name, "namespace": namespace_name},
                 repo_name=repository_name,
             )
-            return {
-                "namespace": namespace_name,
-                "name": repository_name,
-                "kind": kind,
-            }, 201
+            return {"namespace": namespace_name, "name": repository_name, "kind": kind,}, 201
 
         raise Unauthorized()
 
@@ -262,9 +248,7 @@ class Repository(RepositoryParamResource):
         "RepoUpdate": {
             "type": "object",
             "description": "Fields which can be updated in a repository.",
-            "required": [
-                "description",
-            ],
+            "required": ["description",],
             "properties": {
                 "description": {
                     "type": "string",
@@ -317,10 +301,7 @@ class Repository(RepositoryParamResource):
                 key = "%s/%s" % (day_date.month, day_date.day)
                 if key not in found_dates:
                     stats.append(
-                        {
-                            "date": day_date.date().isoformat(),
-                            "count": 0,
-                        }
+                        {"date": day_date.date().isoformat(), "count": 0,}
                     )
 
             repo_data["stats"] = stats
@@ -377,17 +358,12 @@ class RepositoryVisibility(RepositoryParamResource):
         "ChangeVisibility": {
             "type": "object",
             "description": "Change the visibility for the repository.",
-            "required": [
-                "visibility",
-            ],
+            "required": ["visibility",],
             "properties": {
                 "visibility": {
                     "type": "string",
                     "description": "Visibility which the repository will start with",
-                    "enum": [
-                        "public",
-                        "private",
-                    ],
+                    "enum": ["public", "private",],
                 },
             },
         }
@@ -427,9 +403,7 @@ class RepositoryTrust(RepositoryParamResource):
         "ChangeRepoTrust": {
             "type": "object",
             "description": "Change the trust settings for the repository.",
-            "required": [
-                "trust_enabled",
-            ],
+            "required": ["trust_enabled",],
             "properties": {
                 "trust_enabled": {
                     "type": "boolean",

@@ -10,13 +10,7 @@ from test.fixtures import *
 
 
 @pytest.mark.parametrize(
-    "query",
-    [
-        (""),
-        ("simple"),
-        ("public"),
-        ("repository"),
-    ],
+    "query", [(""), ("simple"), ("public"), ("repository"),],
 )
 def test_repository_search(query, client):
     # Prime the caches.
@@ -33,12 +27,7 @@ def test_repository_search(query, client):
 
 
 @pytest.mark.parametrize(
-    "query",
-    [
-        ("simple"),
-        ("public"),
-        ("repository"),
-    ],
+    "query", [("simple"), ("public"), ("repository"),],
 )
 def test_search_query_count(query, client):
     with client_with_identity("devtable", client) as cl:
@@ -53,13 +42,7 @@ def test_search_query_count(query, client):
     reason="MySQL FULLTEXT indexes don't update synchronously",
 )
 @pytest.mark.parametrize(
-    "page_count",
-    [
-        1,
-        2,
-        4,
-        6,
-    ],
+    "page_count", [1, 2, 4, 6,],
 )
 def test_repository_search_pagination(page_count, client):
     # Create at least a few pages of results.

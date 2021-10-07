@@ -7,13 +7,7 @@ from six import add_metaclass
 class RepositoryAuthorizedEmail(
     namedtuple(
         "RepositoryAuthorizedEmail",
-        [
-            "email",
-            "repository_name",
-            "namespace_name",
-            "confirmed",
-            "code",
-        ],
+        ["email", "repository_name", "namespace_name", "confirmed", "code",],
     )
 ):
     """

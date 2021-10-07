@@ -25,18 +25,9 @@ BUILD_TOKEN_CONTEXT_SCHEMA = {
     "description": "Build context",
     "required": ["token_type", "build_id", "job_id", "expiration"],
     "properties": {
-        "token_type": {
-            "type": "string",
-            "description": "The build token type",
-        },
-        "build_id": {
-            "type": "string",
-            "description": "The build id",
-        },
-        "job_id": {
-            "type": "string",
-            "description": "The job id",
-        },
+        "token_type": {"type": "string", "description": "The build token type",},
+        "build_id": {"type": "string", "description": "The build id",},
+        "job_id": {"type": "string", "description": "The job id",},
         "expiration": {
             "type": "number",
             "description": "The number of seconds until the job expires",

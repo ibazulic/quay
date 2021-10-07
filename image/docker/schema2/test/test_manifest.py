@@ -124,9 +124,7 @@ def test_valid_manifest():
 
     retriever = ContentRetrieverForTesting.for_config(
         {
-            "config": {
-                "Labels": {},
-            },
+            "config": {"Labels": {},},
             "rootfs": {"type": "layers", "diff_ids": []},
             "history": [
                 {"created": "2018-04-03T18:37:09.284840891Z", "created_by": "foo"},
@@ -207,9 +205,7 @@ def test_valid_remote_manifest():
 
     retriever = ContentRetrieverForTesting.for_config(
         {
-            "config": {
-                "Labels": {},
-            },
+            "config": {"Labels": {},},
             "rootfs": {"type": "layers", "diff_ids": []},
             "history": [
                 {"created": "2018-04-03T18:37:09.284840891Z", "created_by": "foo"},
@@ -248,9 +244,7 @@ def test_get_manifest_labels():
     labels = dict(foo="bar", baz="meh")
     retriever = ContentRetrieverForTesting.for_config(
         {
-            "config": {
-                "Labels": labels,
-            },
+            "config": {"Labels": labels,},
             "rootfs": {"type": "layers", "diff_ids": []},
             "history": [],
         },
@@ -267,9 +261,7 @@ def test_build_schema1():
     assert not manifest.has_remote_layer
 
     retriever = ContentRetrieverForTesting(
-        {
-            "sha256:b5b2b2c507a0944348e0303114d8d93aaaa081732b86451d9bce1f432a537bc7": CONFIG_BYTES,
-        }
+        {"sha256:b5b2b2c507a0944348e0303114d8d93aaaa081732b86451d9bce1f432a537bc7": CONFIG_BYTES,}
     )
 
     builder = DockerSchema1ManifestBuilder("somenamespace", "somename", "sometag")
@@ -282,9 +274,7 @@ def test_build_schema1():
 def test_get_schema1_manifest():
     retriever = ContentRetrieverForTesting.for_config(
         {
-            "config": {
-                "Labels": {},
-            },
+            "config": {"Labels": {},},
             "rootfs": {"type": "layers", "diff_ids": []},
             "history": [
                 {"created": "2018-04-03T18:37:09.284840891Z", "created_by": "foo"},
@@ -388,9 +378,7 @@ def test_unencoded_unicode_manifest():
 
     retriever = ContentRetrieverForTesting.for_config(
         {
-            "config": {
-                "author": "Sômé guy",
-            },
+            "config": {"author": "Sômé guy",},
             "rootfs": {"type": "layers", "diff_ids": []},
             "history": [
                 {
@@ -412,9 +400,7 @@ def test_unencoded_unicode_manifest():
 def test_build_unencoded_unicode_manifest():
     config_json = json.dumps(
         {
-            "config": {
-                "author": "Sômé guy",
-            },
+            "config": {"author": "Sômé guy",},
             "rootfs": {"type": "layers", "diff_ids": []},
             "history": [
                 {

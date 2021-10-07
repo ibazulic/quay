@@ -5,15 +5,7 @@ from six import add_metaclass
 
 
 class GlobalMessage(
-    namedtuple(
-        "GlobalMessage",
-        [
-            "uuid",
-            "content",
-            "severity",
-            "media_type_name",
-        ],
-    )
+    namedtuple("GlobalMessage", ["uuid", "content", "severity", "media_type_name",],)
 ):
     def to_dict(self):
         return {

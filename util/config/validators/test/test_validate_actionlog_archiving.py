@@ -9,11 +9,7 @@ from test.fixtures import *
 
 @pytest.mark.parametrize(
     "unvalidated_config",
-    [
-        ({}),
-        ({"ACTION_LOG_ARCHIVE_PATH": "foo"}),
-        ({"ACTION_LOG_ARCHIVE_LOCATION": ""}),
-    ],
+    [({}), ({"ACTION_LOG_ARCHIVE_PATH": "foo"}), ({"ACTION_LOG_ARCHIVE_LOCATION": ""}),],
 )
 def test_skip_validate_actionlog(unvalidated_config, app):
     validator = ActionLogArchivingValidator()
@@ -65,9 +61,7 @@ def test_valid_config(app):
             "FEATURE_ACTION_LOG_ROTATION": True,
             "ACTION_LOG_ARCHIVE_PATH": "somepath",
             "ACTION_LOG_ARCHIVE_LOCATION": "somelocation",
-            "DISTRIBUTED_STORAGE_CONFIG": {
-                "somelocation": {},
-            },
+            "DISTRIBUTED_STORAGE_CONFIG": {"somelocation": {},},
         }
     )
 

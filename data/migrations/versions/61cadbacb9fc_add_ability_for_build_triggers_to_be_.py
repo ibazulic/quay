@@ -25,17 +25,11 @@ def upgrade(op, tables, tester):
     op.create_index("disablereason_name", "disablereason", ["name"], unique=True)
 
     op.bulk_insert(
-        tables.disablereason,
-        [
-            {"id": 1, "name": "user_toggled"},
-        ],
+        tables.disablereason, [{"id": 1, "name": "user_toggled"},],
     )
 
     op.bulk_insert(
-        tables.logentrykind,
-        [
-            {"name": "toggle_repo_trigger"},
-        ],
+        tables.logentrykind, [{"name": "toggle_repo_trigger"},],
     )
 
     op.add_column(

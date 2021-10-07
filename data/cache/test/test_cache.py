@@ -44,11 +44,7 @@ class MockClient(object):
 
 
 @pytest.mark.parametrize(
-    "cache_type",
-    [
-        (NoopDataModelCache),
-        (InMemoryDataModelCache),
-    ],
+    "cache_type", [(NoopDataModelCache), (InMemoryDataModelCache),],
 )
 def test_caching(cache_type):
     key = CacheKey("foo", "60m")
@@ -120,26 +116,18 @@ def test_redis_cache():
         pytest.param(
             {
                 "engine": "redis",
-                "redis_config": {
-                    "primary": {"host": "127.0.0.1", "password": "redisPassword"},
-                },
+                "redis_config": {"primary": {"host": "127.0.0.1", "password": "redisPassword"},},
             },
             None,
             id="redis",
         ),
         pytest.param(
-            {
-                "engine": "memcached",
-                "endpoint": "127.0.0.1",
-            },
+            {"engine": "memcached", "endpoint": "127.0.0.1",},
             (ValueError, "Invalid Redis driver for cache model"),
             id="invalid engine for redis",
         ),
         pytest.param(
-            {
-                "engine": "redis",
-                "redis_config": {},
-            },
+            {"engine": "redis", "redis_config": {},},
             (ValueError, "Invalid Redis config for redis"),
             id="invalid config for redis",
         ),

@@ -63,10 +63,7 @@ class RobotPreOCIModel(RobotInterface):
 
                 if include_permissions:
                     robot_dict.update(
-                        {
-                            "teams": [],
-                            "repositories": [],
-                        }
+                        {"teams": [], "repositories": [],}
                     )
 
             robots[robot_name] = Robot(

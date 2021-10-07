@@ -15,11 +15,7 @@ class LockNotAcquiredException(Exception):
 def _redlock_factory(config):
     _redis_info = dict(config["USER_EVENTS_REDIS"])
     _redis_info.update(
-        {
-            "socket_connect_timeout": 5,
-            "socket_timeout": 5,
-            "single_connection_client": True,
-        }
+        {"socket_connect_timeout": 5, "socket_timeout": 5, "single_connection_client": True,}
     )
     lock_factory = RedLockFactory(connection_details=[_redis_info])
     return lock_factory

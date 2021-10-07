@@ -10,10 +10,7 @@ from test.fixtures import *
 
 
 @pytest.mark.parametrize(
-    "unvalidated_config",
-    [
-        ({"DISTRIBUTED_STORAGE_PREFERENCE": []}),
-    ],
+    "unvalidated_config", [({"DISTRIBUTED_STORAGE_PREFERENCE": []}),],
 )
 def test_validate_noop(unvalidated_config, app):
 

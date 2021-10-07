@@ -114,19 +114,11 @@ actions = {
     ),
     "GetVulnerabilityReport": lambda manifest_hash: Action(
         "GetVulnerabilityReport",
-        (
-            "GET",
-            "/matcher/api/v1/vulnerability_report/" + manifest_hash,
-            None,
-        ),
+        ("GET", "/matcher/api/v1/vulnerability_report/" + manifest_hash, None,),
     ),
     "DeleteNotification": lambda notification_id: Action(
         "DeleteNotification",
-        (
-            "DELETE",
-            "/notifier/api/v1/notification/%s" % (notification_id),
-            None,
-        ),
+        ("DELETE", "/notifier/api/v1/notification/%s" % (notification_id), None,),
     ),
     "GetNotification": lambda notification_id, next_param: Action(
         "GetNotification",
@@ -184,9 +176,7 @@ class ClairSecurityScannerAPI(SecurityScannerAPIInterface):
                     if not l.layer_info.is_remote
                     else l.layer_info.urls[0],
                     "headers": _join(
-                        {
-                            "Accept": ["application/gzip"],
-                        },
+                        {"Accept": ["application/gzip"],},
                         (
                             self._blob_url_retriever.headers_for_download(
                                 manifest.repository, l.blob, DOWNLOAD_VALIDITY_LIFETIME_S

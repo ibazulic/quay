@@ -143,11 +143,7 @@ class OCIModel(RegistryDataInterface):
         return tag.manifest
 
     def lookup_manifest_by_digest(
-        self,
-        repository_ref,
-        manifest_digest,
-        allow_dead=False,
-        require_available=False,
+        self, repository_ref, manifest_digest, allow_dead=False, require_available=False,
     ):
         """
         Looks up the manifest with the given digest under the given repository and returns it or
@@ -174,11 +170,7 @@ class OCIModel(RegistryDataInterface):
 
         # Create the label itself.
         label = oci.label.create_manifest_label(
-            manifest._db_id,
-            key,
-            value,
-            source_type_name,
-            media_type_name,
+            manifest._db_id, key, value, source_type_name, media_type_name,
         )
         if label is None:
             return None
@@ -375,10 +367,7 @@ class OCIModel(RegistryDataInterface):
                 label_dict = next(
                     (
                         label.asdict()
-                        for label in self.list_manifest_labels(
-                            wrapped_manifest,
-                            key_prefix="quay",
-                        )
+                        for label in self.list_manifest_labels(wrapped_manifest, key_prefix="quay",)
                         if label.key == LABEL_EXPIRY_KEY
                     ),
                     None,
@@ -447,16 +436,13 @@ class OCIModel(RegistryDataInterface):
                     parsed = manifest.get_parsed_manifest()
                 except ManifestException:
                     logger.exception(
-                        "Could not parse manifest `%s` in retarget_tag",
-                        manifest._db_id,
+                        "Could not parse manifest `%s` in retarget_tag", manifest._db_id,
                     )
                     return None
 
                 if parsed.tag != tag_name:
                     logger.debug(
-                        "Rewriting manifest `%s` for tag named `%s`",
-                        manifest._db_id,
-                        tag_name,
+                        "Rewriting manifest `%s` for tag named `%s`", manifest._db_id, tag_name,
                     )
 
                     repository_id = repository_ref._db_id
@@ -472,10 +458,7 @@ class OCIModel(RegistryDataInterface):
             label_dict = next(
                 (
                     label.asdict()
-                    for label in self.list_manifest_labels(
-                        manifest,
-                        key_prefix="quay",
-                    )
+                    for label in self.list_manifest_labels(manifest, key_prefix="quay",)
                     if label.key == LABEL_EXPIRY_KEY
                 ),
                 None,
@@ -691,10 +674,7 @@ class OCIModel(RegistryDataInterface):
         specified).
         """
         return self._list_manifest_layers(
-            repository_ref._db_id,
-            parsed_manifest,
-            storage,
-            include_placements=include_placements,
+            repository_ref._db_id, parsed_manifest, storage, include_placements=include_placements,
         )
 
     def get_manifest_local_blobs(self, manifest, storage, include_placements=False):

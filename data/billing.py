@@ -348,11 +348,7 @@ class FakeSubscription(AttrDict):
 
 class FakeStripe(object):
     class Customer(AttrDict):
-        FAKE_PLAN = AttrDict(
-            {
-                "id": "bus-small",
-            }
-        )
+        FAKE_PLAN = AttrDict({"id": "bus-small",})
 
         FAKE_SUBSCRIPTION = AttrDict(
             {
@@ -377,11 +373,7 @@ class FakeStripe(object):
             }
         )
 
-        FAKE_CARD_LIST = AttrDict(
-            {
-                "data": [FAKE_CARD],
-            }
-        )
+        FAKE_CARD_LIST = AttrDict({"data": [FAKE_CARD],})
 
         ACTIVE_CUSTOMERS = {}
 
@@ -434,11 +426,7 @@ class FakeStripe(object):
     class Invoice(AttrDict):
         @staticmethod
         def list(customer, count):
-            return AttrDict(
-                {
-                    "data": [],
-                }
-            )
+            return AttrDict({"data": [],})
 
 
 class Billing(object):

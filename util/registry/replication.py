@@ -27,10 +27,7 @@ def queue_replication_batch(namespace, batch_size=DEFAULT_BATCH_SIZE):
                 queue_put(
                     [storage.uuid],
                     json.dumps(
-                        {
-                            "namespace_user_id": namespace_user.id,
-                            "storage_id": storage.uuid,
-                        }
+                        {"namespace_user_id": namespace_user.id, "storage_id": storage.uuid,}
                     ),
                 )
 

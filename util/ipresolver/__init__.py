@@ -155,10 +155,7 @@ class IPResolver(IPResolverInterface):
         if self.amazon_ranges is None or parsed_ip not in self.amazon_ranges:
             if geoinfo:
                 return ResolvedLocation(
-                    "internet",
-                    geoinfo.country.iso_code,
-                    self.sync_token,
-                    geoinfo.country.iso_code,
+                    "internet", geoinfo.country.iso_code, self.sync_token, geoinfo.country.iso_code,
                 )
 
             return ResolvedLocation("internet", None, self.sync_token, None)

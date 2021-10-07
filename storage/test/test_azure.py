@@ -40,18 +40,14 @@ def fake_azure_storage(files=None):
         if request.method == "GET":
             return {
                 "status_code": 200 if filename in files else 404,
-                "headers": {
-                    "ETag": "foobar",
-                },
+                "headers": {"ETag": "foobar",},
                 "content": files.get(filename) if filename in files else "",
             }
 
         if request.method == "HEAD":
             return {
                 "status_code": 200 if filename in files else 404,
-                "headers": {
-                    "ETag": "foobar",
-                }
+                "headers": {"ETag": "foobar",}
                 if filename in files
                 else {"x-ms-error-code": "ResourceNotFound"},
                 "content": "",
@@ -196,12 +192,7 @@ def test_stream_write():
 
 
 @pytest.mark.parametrize(
-    "chunk_size",
-    [
-        (1),
-        (5),
-        (10),
-    ],
+    "chunk_size", [(1), (5), (10),],
 )
 def test_chunked_uploading(chunk_size):
     with fake_azure_storage() as s, patch(

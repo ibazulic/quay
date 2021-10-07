@@ -70,12 +70,8 @@ class V2Protocol(RegistryProtocol):
             Failures.DISALLOWED_LIBRARY_NAMESPACE: 400,
             Failures.ANONYMOUS_NOT_ALLOWED: 401,
         },
-        V2ProtocolSteps.GET_BLOB: {
-            Failures.GEO_BLOCKED: 403,
-        },
-        V2ProtocolSteps.BLOB_HEAD_CHECK: {
-            Failures.DISALLOWED_LIBRARY_NAMESPACE: 400,
-        },
+        V2ProtocolSteps.GET_BLOB: {Failures.GEO_BLOCKED: 403,},
+        V2ProtocolSteps.BLOB_HEAD_CHECK: {Failures.DISALLOWED_LIBRARY_NAMESPACE: 400,},
         V2ProtocolSteps.START_UPLOAD: {
             Failures.DISALLOWED_LIBRARY_NAMESPACE: 400,
             Failures.READ_ONLY: 401,
@@ -573,10 +569,7 @@ class V2Protocol(RegistryProtocol):
                     session,
                     "POST",
                     "/v2/%s/blobs/uploads/" % self.repo_name(namespace, repo_name),
-                    params={
-                        "mount": blob_digest,
-                        "from": options.mount_blobs[blob_digest],
-                    },
+                    params={"mount": blob_digest, "from": options.mount_blobs[blob_digest],},
                     expected_status=(201, expected_failure, V2ProtocolSteps.MOUNT_BLOB),
                     headers=headers,
                 )

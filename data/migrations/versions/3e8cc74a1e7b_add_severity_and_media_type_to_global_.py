@@ -43,10 +43,7 @@ def upgrade(op, tables, tester):
     # ### end Alembic commands ###
 
     op.bulk_insert(
-        tables.mediatype,
-        [
-            {"name": "text/markdown"},
-        ],
+        tables.mediatype, [{"name": "text/markdown"},],
     )
 
     # ### population of test data ### #

@@ -57,12 +57,7 @@ def test_start_build_disabled_trigger(app):
             {"ref": "ref/heads/master"}, {"branchtag_regex": "nothing"}, id="branchtag regex"
         ),
         pytest.param(
-            {
-                "ref": "ref/heads/master",
-                "commit_info": {
-                    "message": "[skip build]",
-                },
-            },
+            {"ref": "ref/heads/master", "commit_info": {"message": "[skip build]",},},
             {},
             id="commit message",
         ),
@@ -81,9 +76,7 @@ def test_does_not_skip():
     prepared = PreparedBuild()
     prepared.metadata = {
         "ref": "ref/heads/master",
-        "commit_info": {
-            "message": "some cool message",
-        },
+        "commit_info": {"message": "some cool message",},
     }
 
     config = {

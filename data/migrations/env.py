@@ -106,9 +106,7 @@ def run_migrations_online():
     engine = get_engine()
     connection = engine.connect()
     context.configure(
-        connection=connection,
-        target_metadata=target_metadata,
-        transactional_ddl=False,
+        connection=connection, target_metadata=target_metadata, transactional_ddl=False,
     )
 
     try:

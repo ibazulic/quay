@@ -117,24 +117,13 @@ class DockerSchema1Manifest(ManifestInterface):
                 "items": {
                     "type": "object",
                     "properties": {
-                        DOCKER_SCHEMA1_PROTECTED_KEY: {
-                            "type": "string",
-                        },
+                        DOCKER_SCHEMA1_PROTECTED_KEY: {"type": "string",},
                         DOCKER_SCHEMA1_HEADER_KEY: {
                             "type": "object",
-                            "properties": {
-                                "alg": {
-                                    "type": "string",
-                                },
-                                "jwk": {
-                                    "type": "object",
-                                },
-                            },
+                            "properties": {"alg": {"type": "string",}, "jwk": {"type": "object",},},
                             "required": ["alg", "jwk"],
                         },
-                        DOCKER_SCHEMA1_SIGNATURE_KEY: {
-                            "type": "string",
-                        },
+                        DOCKER_SCHEMA1_SIGNATURE_KEY: {"type": "string",},
                     },
                     "required": [
                         DOCKER_SCHEMA1_PROTECTED_KEY,
@@ -143,21 +132,13 @@ class DockerSchema1Manifest(ManifestInterface):
                     ],
                 },
             },
-            DOCKER_SCHEMA1_REPO_TAG_KEY: {
-                "type": "string",
-            },
-            DOCKER_SCHEMA1_REPO_NAME_KEY: {
-                "type": "string",
-            },
+            DOCKER_SCHEMA1_REPO_TAG_KEY: {"type": "string",},
+            DOCKER_SCHEMA1_REPO_NAME_KEY: {"type": "string",},
             DOCKER_SCHEMA1_HISTORY_KEY: {
                 "type": "array",
                 "items": {
                     "type": "object",
-                    "properties": {
-                        DOCKER_SCHEMA1_V1_COMPAT_KEY: {
-                            "type": "string",
-                        },
-                    },
+                    "properties": {DOCKER_SCHEMA1_V1_COMPAT_KEY: {"type": "string",},},
                     "required": [DOCKER_SCHEMA1_V1_COMPAT_KEY],
                 },
             },
@@ -165,11 +146,7 @@ class DockerSchema1Manifest(ManifestInterface):
                 "type": "array",
                 "items": {
                     "type": "object",
-                    "properties": {
-                        DOCKER_SCHEMA1_BLOB_SUM_KEY: {
-                            "type": "string",
-                        },
-                    },
+                    "properties": {DOCKER_SCHEMA1_BLOB_SUM_KEY: {"type": "string",},},
                     "required": [DOCKER_SCHEMA1_BLOB_SUM_KEY],
                 },
             },
@@ -668,29 +645,19 @@ class DockerSchema1ManifestBuilder(object):
 
     def add_layer(self, layer_digest, v1_json_metadata):
         self._fs_layer_digests.append(
-            {
-                DOCKER_SCHEMA1_BLOB_SUM_KEY: layer_digest,
-            }
+            {DOCKER_SCHEMA1_BLOB_SUM_KEY: layer_digest,}
         )
         self._history.append(
-            {
-                DOCKER_SCHEMA1_V1_COMPAT_KEY: v1_json_metadata or "{}",
-            }
+            {DOCKER_SCHEMA1_V1_COMPAT_KEY: v1_json_metadata or "{}",}
         )
         return self
 
     def insert_layer(self, layer_digest, v1_json_metadata):
         self._fs_layer_digests.insert(
-            0,
-            {
-                DOCKER_SCHEMA1_BLOB_SUM_KEY: layer_digest,
-            },
+            0, {DOCKER_SCHEMA1_BLOB_SUM_KEY: layer_digest,},
         )
         self._history.insert(
-            0,
-            {
-                DOCKER_SCHEMA1_V1_COMPAT_KEY: v1_json_metadata or "{}",
-            },
+            0, {DOCKER_SCHEMA1_V1_COMPAT_KEY: v1_json_metadata or "{}",},
         )
         return self
 

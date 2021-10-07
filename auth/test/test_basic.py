@@ -136,6 +136,5 @@ def test_invalid_unicode_3(app):
     header = "basic " + b64encode(auth).decode("ascii")
     result = validate_basic_auth(header)
     assert result == ValidateResult(
-        AuthKind.basic,
-        error_message="Could not find robot with specified username",
+        AuthKind.basic, error_message="Could not find robot with specified username",
     )

@@ -19,10 +19,7 @@ def upgrade(op, tables, tester):
         sa.Column("number_of_failures", sa.Integer(), nullable=False, server_default="0"),
     )
     op.bulk_insert(
-        tables.logentrykind,
-        [
-            {"name": "reset_repo_notification"},
-        ],
+        tables.logentrykind, [{"name": "reset_repo_notification"},],
     )
 
     # ### population of test data ### #

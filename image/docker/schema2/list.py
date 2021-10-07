@@ -117,9 +117,7 @@ class DockerSchema2ManifestList(ManifestListInterface):
                                     "type": "array",
                                     "description": "specifies an array of strings, each listing a required OS "
                                     + "feature (for example on Windows win32k)",
-                                    "items": {
-                                        "type": "string",
-                                    },
+                                    "items": {"type": "string",},
                                 },
                                 DOCKER_SCHEMA2_MANIFESTLIST_VARIANT_KEY: {
                                     "type": "string",
@@ -130,9 +128,7 @@ class DockerSchema2ManifestList(ManifestListInterface):
                                     "type": "array",
                                     "description": "specifies an array of strings, each listing a required CPU "
                                     + "feature (for example sse4 or aes).",
-                                    "items": {
-                                        "type": "string",
-                                    },
+                                    "items": {"type": "string",},
                                 },
                             },
                             "required": [

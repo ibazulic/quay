@@ -562,10 +562,7 @@ _BUILDPACK = _descriptor.Descriptor(
         ),
     ],
     extensions=[],
-    nested_types=[
-        _BUILDPACK_BASEIMAGE,
-        _BUILDPACK_GITPACKAGE,
-    ],
+    nested_types=[_BUILDPACK_BASEIMAGE, _BUILDPACK_GITPACKAGE,],
     enum_types=[],
     serialized_options=None,
     is_extendable=False,
@@ -851,9 +848,7 @@ _SETPHASEREQUEST = _descriptor.Descriptor(
         ),
     ],
     extensions=[],
-    nested_types=[
-        _SETPHASEREQUEST_PULLMETADATA,
-    ],
+    nested_types=[_SETPHASEREQUEST_PULLMETADATA,],
     enum_types=[],
     serialized_options=None,
     is_extendable=False,

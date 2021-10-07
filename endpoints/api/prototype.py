@@ -84,26 +84,17 @@ class PermissionPrototypeList(ApiResource):
         "NewPrototype": {
             "type": "object",
             "description": "Description of a new prototype",
-            "required": [
-                "role",
-                "delegate",
-            ],
+            "required": ["role", "delegate",],
             "properties": {
                 "role": {
                     "type": "string",
                     "description": "Role that should be applied to the delegate",
-                    "enum": [
-                        "read",
-                        "write",
-                        "admin",
-                    ],
+                    "enum": ["read", "write", "admin",],
                 },
                 "activating_user": {
                     "type": "object",
                     "description": "Repository creating user to whom the rule should apply",
-                    "required": [
-                        "name",
-                    ],
+                    "required": ["name",],
                     "properties": {
                         "name": {
                             "type": "string",
@@ -114,10 +105,7 @@ class PermissionPrototypeList(ApiResource):
                 "delegate": {
                     "type": "object",
                     "description": "Information about the user or team to which the rule grants access",
-                    "required": [
-                        "name",
-                        "kind",
-                    ],
+                    "required": ["name", "kind",],
                     "properties": {
                         "name": {
                             "type": "string",
@@ -126,10 +114,7 @@ class PermissionPrototypeList(ApiResource):
                         "kind": {
                             "type": "string",
                             "description": "Whether the delegate is a user or a team",
-                            "enum": [
-                                "user",
-                                "team",
-                            ],
+                            "enum": ["user", "team",],
                         },
                     },
                 },
@@ -237,18 +222,12 @@ class PermissionPrototype(ApiResource):
         "PrototypeUpdate": {
             "type": "object",
             "description": "Description of a the new prototype role",
-            "required": [
-                "role",
-            ],
+            "required": ["role",],
             "properties": {
                 "role": {
                     "type": "string",
                     "description": "Role that should be applied to the permission",
-                    "enum": [
-                        "read",
-                        "write",
-                        "admin",
-                    ],
+                    "enum": ["read", "write", "admin",],
                 },
             },
         },

@@ -15,12 +15,7 @@ from test.fixtures import *
 
 @pytest.mark.parametrize(
     "trust_enabled,repo_found,expected_status",
-    [
-        (True, True, 200),
-        (False, True, 200),
-        (False, False, 404),
-        ("invalid_req", False, 400),
-    ],
+    [(True, True, 200), (False, True, 200), (False, False, 404), ("invalid_req", False, 400),],
 )
 def test_post_changetrust(trust_enabled, repo_found, expected_status, client):
     with patch("endpoints.api.repository.tuf_metadata_api") as mock_tuf:
@@ -187,11 +182,7 @@ def test_create_repository(repo_name, extended_repo_names, expected_status, clie
 
 
 @pytest.mark.parametrize(
-    "has_tag_manifest",
-    [
-        True,
-        False,
-    ],
+    "has_tag_manifest", [True, False,],
 )
 def test_get_repo(has_tag_manifest, client, initialized_db):
     with client_with_identity("devtable", client) as cl:

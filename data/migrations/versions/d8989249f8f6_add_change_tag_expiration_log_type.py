@@ -13,10 +13,7 @@ down_revision = "dc4af11a5f90"
 
 def upgrade(op, tables, tester):
     op.bulk_insert(
-        tables.logentrykind,
-        [
-            {"name": "change_tag_expiration"},
-        ],
+        tables.logentrykind, [{"name": "change_tag_expiration"},],
     )
 
 

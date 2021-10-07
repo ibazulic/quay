@@ -168,12 +168,7 @@ class BuilderExecutor(object):
             return None
 
     def generate_cloud_config(
-        self,
-        token,
-        build_uuid,
-        manager_hostname,
-        quay_username=None,
-        quay_password=None,
+        self, token, build_uuid, manager_hostname, quay_username=None, quay_password=None,
     ):
         if quay_username is None:
             quay_username = self.executor_config["QUAY_USERNAME"]

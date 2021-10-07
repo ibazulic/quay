@@ -31,18 +31,12 @@ ACCESS_SCHEMA = {
     "description": "List of access granted to the subject",
     "items": {
         "type": "object",
-        "required": [
-            "type",
-            "name",
-            "actions",
-        ],
+        "required": ["type", "name", "actions",],
         "properties": {
             "type": {
                 "type": "string",
                 "description": "We only allow repository permissions",
-                "enum": [
-                    "repository",
-                ],
+                "enum": ["repository",],
             },
             "name": {
                 "type": "string",
@@ -51,14 +45,7 @@ ACCESS_SCHEMA = {
             "actions": {
                 "type": "array",
                 "description": "List of specific verbs which can be performed against repository",
-                "items": {
-                    "type": "string",
-                    "enum": [
-                        "push",
-                        "pull",
-                        "*",
-                    ],
-                },
+                "items": {"type": "string", "enum": ["push", "pull", "*",],},
             },
         },
     },

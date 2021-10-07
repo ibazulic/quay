@@ -13,10 +13,7 @@ down_revision = "94836b099894"
 
 def upgrade(op, tables, tester):
     op.bulk_insert(
-        tables.notificationkind,
-        [
-            {"name": "build_cancelled"},
-        ],
+        tables.notificationkind, [{"name": "build_cancelled"},],
     )
 
 

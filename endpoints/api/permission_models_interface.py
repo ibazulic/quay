@@ -27,14 +27,7 @@ class Role(namedtuple("Role", ["role_name"])):
 class UserPermission(
     namedtuple(
         "UserPermission",
-        [
-            "role_name",
-            "username",
-            "is_robot",
-            "avatar",
-            "is_org_member",
-            "has_org",
-        ],
+        ["role_name", "username", "is_robot", "avatar", "is_org_member", "has_org",],
     )
 ):
     def to_dict(self):
@@ -50,15 +43,7 @@ class UserPermission(
 
 
 class RobotPermission(
-    namedtuple(
-        "RobotPermission",
-        [
-            "role_name",
-            "username",
-            "is_robot",
-            "is_org_member",
-        ],
-    )
+    namedtuple("RobotPermission", ["role_name", "username", "is_robot", "is_org_member",],)
 ):
     def to_dict(self, user=None, team=None, org_members=None):
         return {
@@ -69,16 +54,7 @@ class RobotPermission(
         }
 
 
-class TeamPermission(
-    namedtuple(
-        "TeamPermission",
-        [
-            "role_name",
-            "team_name",
-            "avatar",
-        ],
-    )
-):
+class TeamPermission(namedtuple("TeamPermission", ["role_name", "team_name", "avatar",],)):
     def to_dict(self):
         return {
             "role": self.role_name,

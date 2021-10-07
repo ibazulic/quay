@@ -42,18 +42,12 @@ def test_registration_build_token(initialized_db, token_type, expected_exception
     if expected_exception is not None:
         with pytest.raises(InvalidBuildTokenException) as ibe:
             payload = verify_build_token(
-                token,
-                app.config["SERVER_HOSTNAME"],
-                token_type,
-                instance_keys,
+                token, app.config["SERVER_HOSTNAME"], token_type, instance_keys,
             )
         assert ibe.match(expected_exception)
     else:
         payload = verify_build_token(
-            token,
-            app.config["SERVER_HOSTNAME"],
-            token_type,
-            instance_keys,
+            token, app.config["SERVER_HOSTNAME"], token_type, instance_keys,
         )
 
         assert payload["aud"] == app.config["SERVER_HOSTNAME"]

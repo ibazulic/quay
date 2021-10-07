@@ -57,10 +57,7 @@ def fake_jwt(requires_email=True):
 def _generate_certs():
     public_key = NamedTemporaryFile(delete=True)
 
-    private_key = rsa.generate_private_key(
-        public_exponent=65537,
-        key_size=2048,
-    )
+    private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048,)
 
     private_pem = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
@@ -71,8 +68,7 @@ def _generate_certs():
     pubkey = private_key.public_key()
     public_key.write(
         pubkey.public_bytes(
-            encoding=serialization.Encoding.OpenSSH,
-            format=serialization.PublicFormat.OpenSSH,
+            encoding=serialization.Encoding.OpenSSH, format=serialization.PublicFormat.OpenSSH,
         )
     )
     public_key.seek(0)

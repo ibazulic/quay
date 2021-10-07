@@ -28,18 +28,14 @@ _TEST_ELASTICSEARCH_CONFIG = {
         (
             {
                 "LOGS_MODEL": "not-elasticsearch",
-                "LOGS_MODEL_CONFIG": {
-                    "elasticsearch_config": _TEST_ELASTICSEARCH_CONFIG,
-                },
+                "LOGS_MODEL_CONFIG": {"elasticsearch_config": _TEST_ELASTICSEARCH_CONFIG,},
             },
             ConfigValidationException,
         ),
         (
             {
                 "LOGS_MODEL": "elasticsearch",
-                "LOGS_MODEL_CONFIG": {
-                    "elasticsearch_config": _TEST_ELASTICSEARCH_CONFIG,
-                },
+                "LOGS_MODEL_CONFIG": {"elasticsearch_config": _TEST_ELASTICSEARCH_CONFIG,},
             },
             None,
         ),

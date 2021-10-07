@@ -22,18 +22,10 @@ def test_duplicate_repository_different_kinds(initialized_db):
     reason="MySQL requires specialized indexing of newly created repos",
 )
 @pytest.mark.parametrize(
-    "query",
-    [
-        (""),
-        ("e"),
-    ],
+    "query", [(""), ("e"),],
 )
 @pytest.mark.parametrize(
-    "authed_username",
-    [
-        (None),
-        ("devtable"),
-    ],
+    "authed_username", [(None), ("devtable"),],
 )
 def test_search_pagination(query, authed_username, initialized_db):
     # Create some public repos.

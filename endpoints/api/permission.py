@@ -96,18 +96,12 @@ class RepositoryUserPermission(RepositoryParamResource):
         "UserPermission": {
             "type": "object",
             "description": "Description of a user permission.",
-            "required": [
-                "role",
-            ],
+            "required": ["role",],
             "properties": {
                 "role": {
                     "type": "string",
                     "description": "Role to use for the user",
-                    "enum": [
-                        "read",
-                        "write",
-                        "admin",
-                    ],
+                    "enum": ["read", "write", "admin",],
                 },
             },
         },
@@ -191,18 +185,12 @@ class RepositoryTeamPermission(RepositoryParamResource):
         "TeamPermission": {
             "type": "object",
             "description": "Description of a team permission.",
-            "required": [
-                "role",
-            ],
+            "required": ["role",],
             "properties": {
                 "role": {
                     "type": "string",
                     "description": "Role to use for the team",
-                    "enum": [
-                        "read",
-                        "write",
-                        "admin",
-                    ],
+                    "enum": ["read", "write", "admin",],
                 },
             },
         },

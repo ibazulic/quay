@@ -140,15 +140,7 @@ class ImageRepositoryRepository(
         return img_repo
 
 
-class Repository(
-    namedtuple(
-        "Repository",
-        [
-            "namespace_name",
-            "repository_name",
-        ],
-    )
-):
+class Repository(namedtuple("Repository", ["namespace_name", "repository_name",],)):
     """
     Repository a single quay repository.
 

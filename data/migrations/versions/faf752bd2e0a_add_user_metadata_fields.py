@@ -23,11 +23,7 @@ def upgrade(op, tables, tester):
     ### end Alembic commands ###
 
     op.bulk_insert(
-        tables.userpromptkind,
-        [
-            {"name": "enter_name"},
-            {"name": "enter_company"},
-        ],
+        tables.userpromptkind, [{"name": "enter_name"}, {"name": "enter_company"},],
     )
 
     # ### population of test data ### #

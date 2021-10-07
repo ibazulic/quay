@@ -23,14 +23,8 @@ db_pooled_connections_in_use = Gauge(
 db_pooled_connections_available = Gauge(
     "quay_db_pooled_connections_available", "number of pooled db connections available"
 )
-db_connect_calls = Counter(
-    "quay_db_connect_calls",
-    "number of connect() calls made to db",
-)
-db_close_calls = Counter(
-    "quay_db_close_calls",
-    "number of close() calls made to db",
-)
+db_connect_calls = Counter("quay_db_connect_calls", "number of connect() calls made to db",)
+db_close_calls = Counter("quay_db_close_calls", "number of close() calls made to db",)
 
 request_duration = Histogram(
     "quay_request_duration_seconds",

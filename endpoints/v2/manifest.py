@@ -99,10 +99,7 @@ def fetch_manifest_by_tagname(namespace_name, repo_name, manifest_ref):
     return Response(
         manifest_bytes.as_unicode(),
         status=200,
-        headers={
-            "Content-Type": manifest_media_type,
-            "Docker-Content-Digest": manifest_digest,
-        },
+        headers={"Content-Type": manifest_media_type, "Docker-Content-Digest": manifest_digest,},
     )
 
 
@@ -129,10 +126,7 @@ def fetch_manifest_by_digest(namespace_name, repo_name, manifest_ref):
     return Response(
         manifest.internal_manifest_bytes.as_unicode(),
         status=200,
-        headers={
-            "Content-Type": manifest.media_type,
-            "Docker-Content-Digest": manifest.digest,
-        },
+        headers={"Content-Type": manifest.media_type, "Docker-Content-Digest": manifest.digest,},
     )
 
 

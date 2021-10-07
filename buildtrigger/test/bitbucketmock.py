@@ -60,9 +60,7 @@ def get_branch(branch_name):
         return (False, None, None)
 
     data = {
-        "target": {
-            "hash": "aaaaaaa",
-        },
+        "target": {"hash": "aaaaaaa",},
     }
 
     return (True, data, None)
@@ -73,9 +71,7 @@ def get_tag(tag_name):
         return (False, None, None)
 
     data = {
-        "target": {
-            "hash": "aaaaaaa",
-        },
+        "target": {"hash": "aaaaaaa",},
     }
 
     return (True, data, None)

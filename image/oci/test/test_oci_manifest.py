@@ -133,11 +133,7 @@ def test_parse_basic_remote_manifest():
 def test_get_schema1_manifest():
     retriever = ContentRetrieverForTesting.for_config(
         {
-            "config": {
-                "Labels": {
-                    "foo": "bar",
-                },
-            },
+            "config": {"Labels": {"foo": "bar",},},
             "rootfs": {"type": "layers", "diff_ids": []},
             "history": [
                 {"created": "2018-04-03T18:37:09.284840891Z", "created_by": "foo"},
@@ -197,12 +193,7 @@ def test_validate_manifest_invalid_config_type():
 def test_get_schema1_manifest_missing_history():
     retriever = ContentRetrieverForTesting.for_config(
         {
-            "config": {
-                "Labels": {
-                    "foo": "bar",
-                },
-                "Cmd": ["dosomething"],
-            },
+            "config": {"Labels": {"foo": "bar",}, "Cmd": ["dosomething"],},
             "rootfs": {"type": "layers", "diff_ids": []},
             "architecture": "amd64",
             "os": "linux",
@@ -239,11 +230,7 @@ def test_get_schema1_manifest_missing_history():
 def test_get_schema1_manifest_incorrect_history():
     retriever = ContentRetrieverForTesting.for_config(
         {
-            "config": {
-                "Labels": {
-                    "foo": "bar",
-                },
-            },
+            "config": {"Labels": {"foo": "bar",},},
             "rootfs": {"type": "layers", "diff_ids": []},
             "history": [
                 {"created": "2018-04-03T18:37:09.284840891Z", "created_by": "foo"},

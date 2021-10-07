@@ -415,8 +415,7 @@ class EphemeralBuilderManager(BuildStateInterface):
         # it to a builder instance.
         if not build_args["build_package"] and not build_args["git"]:
             logger.error(
-                "Failed to start job %s: insufficient build args - No package url or git",
-                job_id,
+                "Failed to start job %s: insufficient build args - No package url or git", job_id,
             )
             self.update_job_phase(job_id, BUILD_PHASE.INTERNAL_ERROR)
             return (None, None)
@@ -670,10 +669,7 @@ class EphemeralBuilderManager(BuildStateInterface):
 
         # Store metric data tracking job
         metric_spec = json.dumps(
-            {
-                "executor_name": started_with_executor.name,
-                "start_time": time.time(),
-            }
+            {"executor_name": started_with_executor.name, "start_time": time.time(),}
         )
 
         # Mark the job as scheduled
@@ -810,10 +806,7 @@ class EphemeralBuilderManager(BuildStateInterface):
         metric_key = self._metric_key(build_id)
         try:
             self._orchestrator.set_key(
-                metric_key,
-                payload,
-                overwrite=False,
-                expiration=self.machine_max_expiration + 60,
+                metric_key, payload, overwrite=False, expiration=self.machine_max_expiration + 60,
             )
         except KeyError:
             logger.warning(

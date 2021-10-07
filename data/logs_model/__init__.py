@@ -8,10 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 def _transition_model(*args, **kwargs):
-    return CombinedLogsModel(
-        DocumentLogsModel(*args, **kwargs),
-        TableLogsModel(*args, **kwargs),
-    )
+    return CombinedLogsModel(DocumentLogsModel(*args, **kwargs), TableLogsModel(*args, **kwargs),)
 
 
 _LOG_MODELS = {
