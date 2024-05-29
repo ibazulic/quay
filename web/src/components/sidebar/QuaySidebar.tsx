@@ -6,16 +6,20 @@ import {
   PageSidebarBody,
 } from '@patternfly/react-core';
 import {Link, useLocation} from 'react-router-dom';
-import {SidebarState} from 'src/atoms/SidebarState';
+import {
+  PluginSidebarNavItems,
+  SidebarNavItems,
+  SidebarState,
+} from 'src/atoms/SidebarState';
 import {NavigationPath} from 'src/routes/NavigationPath';
 import OrganizationsList from 'src/routes/OrganizationsList/OrganizationsList';
 import RepositoriesList from 'src/routes/RepositoriesList/RepositoriesList';
-import {useRecoilValue} from 'recoil';
+import {useRecoilState, useRecoilValue} from 'recoil';
 import OverviewList from 'src/routes/OverviewList/OverviewList';
 import {useQuayConfig} from 'src/hooks/UseQuayConfig';
-import {fetchQuayConfig} from 'src/resources/QuayConfig';
+import {useEffect} from 'react';
 
-interface SideNavProps {
+export interface SideNavProps {
   isSideNav: boolean;
   navPath: NavigationPath;
   title: string;
@@ -26,31 +30,46 @@ export function QuaySidebar() {
   const location = useLocation();
   const sidebarState = useRecoilValue(SidebarState);
   const quayConfig = useQuayConfig();
-  const routes: SideNavProps[] = [
-    {
-      isSideNav: quayConfig?.config?.BRANDING.quay_io ? true : false,
-      navPath: NavigationPath.overviewList,
-      title: 'Overview',
-      component: <OverviewList />,
-    },
-    {
-      isSideNav: true,
-      navPath: NavigationPath.organizationsList,
-      title: 'Organizations',
-      component: <OrganizationsList />,
-    },
-    {
-      isSideNav: true,
-      navPath: NavigationPath.repositoriesList,
-      title: 'Repositories',
-      component: <RepositoriesList organizationName={null} />,
-    },
-  ];
+  const pluginSidebarNavItems = useRecoilValue(PluginSidebarNavItems);
+  const [sidebarNavItems, setSidebarNavItems] =
+    useRecoilState<SideNavProps[]>(SidebarNavItems);
+
+  useEffect(() => {
+    // default sidebar routes
+    setSidebarNavItems([
+      {
+        isSideNav: quayConfig?.config?.BRANDING.quay_io ? true : false,
+        navPath: NavigationPath.overviewList,
+        title: 'Overview',
+        component: <OverviewList />,
+      },
+      {
+        isSideNav: true,
+        navPath: NavigationPath.organizationsList,
+        title: 'Organizations',
+        component: <OrganizationsList />,
+      },
+      {
+        isSideNav: true,
+        navPath: NavigationPath.repositoriesList,
+        title: 'Repositories',
+        component: <RepositoriesList organizationName={null} />,
+      },
+    ]);
+  }, []);
+
+  useEffect(() => {
+    // merge with plugin sidebar routes
+    setSidebarNavItems((prevNavItems) => [
+      ...prevNavItems,
+      ...pluginSidebarNavItems,
+    ]);
+  }, [pluginSidebarNavItems]);
 
   const Navigation = (
     <Nav>
       <NavList>
-        {routes.map((route) =>
+        {sidebarNavItems.map((route) =>
           route.isSideNav ? (
             <NavItem
               key={route.navPath}

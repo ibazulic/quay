@@ -25,6 +25,28 @@ def generate_signed_token(grants, user_context):
     return "{0}{1}".format(SIGNATURE_PREFIX, encrypted)
 
 
+def validate_signed_grant_token(token):
+    # Check that it starts with the expected prefix.
+    if not token.startswith(SIGNATURE_PREFIX):
+        logger.debug("Not a signed grant token: %s", token)
+        return ValidateResult(AuthKind.signed_grant, missing=True)
+
+    # Decrypt the grant.
+    encrypted = token[len(SIGNATURE_PREFIX):]
+    ser = SecureCookieSessionInterface().get_signing_serializer(app)
+
+    try:
+        token_data = ser.loads(encrypted, max_age=app.config["SIGNED_GRANT_EXPIRATION_SEC"])
+    except BadSignature:
+        logger.warning("Signed grant could not be validated: %s", encrypted)
+        return ValidateResult(
+            AuthKind.signed_grant, error_message="Signed grant could not be validated"
+        )
+
+    logger.debug("Successfully validated signed grant with data: %s", token_data)
+    return ValidateResult(AuthKind.signed_grant, signed_data=token_data)
+
+
 def validate_signed_grant(auth_header):
     """
     Validates a signed grant as found inside an auth header and returns whether it points to a valid
@@ -38,23 +60,3 @@ def validate_signed_grant(auth_header):
     if normalized[0].lower() != "token" or len(normalized) != 2:
         logger.debug("Not a token: %s", auth_header)
         return ValidateResult(AuthKind.signed_grant, missing=True)
-
-    # Check that it starts with the expected prefix.
-    if not normalized[1].startswith(SIGNATURE_PREFIX):
-        logger.debug("Not a signed grant token: %s", auth_header)
-        return ValidateResult(AuthKind.signed_grant, missing=True)
-
-    # Decrypt the grant.
-    encrypted = normalized[1][len(SIGNATURE_PREFIX) :]
-    ser = SecureCookieSessionInterface().get_signing_serializer(app)
-
-    try:
-        token_data = ser.loads(encrypted, max_age=app.config["SIGNED_GRANT_EXPIRATION_SEC"])
-    except BadSignature:
-        logger.warning("Signed grant could not be validated: %s", encrypted)
-        return ValidateResult(
-            AuthKind.signed_grant, error_message="Signed grant could not be validated"
-        )
-
-    logger.debug("Successfully validated signed grant with data: %s", token_data)
-    return ValidateResult(AuthKind.signed_grant, signed_data=token_data)
