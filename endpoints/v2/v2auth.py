@@ -90,7 +90,6 @@ def generate_registry_jwt(auth_result, auth_credentials_sent, audience_param, sc
     if get_authenticated_context():
         has_valid_auth_context = not get_authenticated_context().is_anonymous
 
-    logger.info(f'🥐🥐🥐🥐🥐 has_valid_auth_context {has_valid_auth_context}')
     if auth_credentials_sent and not has_valid_auth_context:
         # The auth credentials sent for the user are invalid.
         raise InvalidLogin(auth_result.error_message)

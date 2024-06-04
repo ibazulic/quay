@@ -4,7 +4,7 @@ import logging
 import pprint
 
 from artifacts.plugins.npm import PLUGIN_NAME
-from artifacts.plugins.npm.npm_auth import generate_auth_token_for_read
+from artifacts.utils.plugin_auth import generate_auth_token_for_read
 from artifacts.utils.registry_utils import RegistryError, QuayRegistryClient
 
 logger = logging.getLogger(__name__)
@@ -40,11 +40,10 @@ def parse_package_metadata(npm_post_data):
     return metadata
 
 
-def get_package_metadata(namespace, package_name, tag):
+def get_package_metadata(namespace, package_name, tag, grant_token):
     """"
     package metadata is stored in the config blob
     """
-    grant_token = generate_auth_token_for_read(namespace, package_name)
     response = quayRegistryClient.get_oci_manifest_by_tag(namespace, package_name, tag, grant_token)
     if response.status_code != 200:
         raise RegistryError('Error fetching manifest')
@@ -61,25 +60,22 @@ def get_package_metadata(namespace, package_name, tag):
     return json.loads(response.data)
 
 
-def get_package_list(namespace, package_name):
+def get_package_list(auth_result, namespace, package_name):
     # get list of tags for the package
-    grant_token = generate_auth_token_for_read(namespace, package_name)
-    response = quayRegistryClient.list_tags(namespace, package_name, grant_token)
-    if response.status_code != 200:
-        raise RegistryError('Error fetching tags')
-    tags = response.json.get('tags')
+    grant_token = generate_auth_token_for_read(auth_result, namespace, package_name)
+    tags = quayRegistryClient.get_all_tags(namespace, package_name, grant_token)
     package_list = {}
     for tag in tags:
         logger.info(f'🟢 tag {tag}')
-        metadata = get_package_metadata(namespace, package_name, tag)
+        metadata = get_package_metadata(namespace, package_name, tag, grant_token)
         package_list[tag] = metadata
 
     return package_list
 
 
-def get_package_tarball(namespace, package_name, package_version):
+def get_package_tarball(auth_result, namespace, package_name, package_version):
     # get the package manifest
-    grant_token = generate_auth_token_for_read(namespace, package_name)
+    grant_token = generate_auth_token_for_read(auth_result, namespace, package_name)
     response = quayRegistryClient.get_oci_manifest_by_tag(namespace, package_name, package_version, grant_token)
     if response.status_code != 200:
         raise RegistryError('Error fetching manifest')

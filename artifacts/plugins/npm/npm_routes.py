@@ -5,15 +5,16 @@ from pprint import pprint
 
 from artifacts.plugins.npm.npm_utils import parse_package_tarball, get_package_list, check_valid_package_name, \
     InvalidPackageNameError, parse_package_metadata, get_package_tarball, quayRegistryClient
-from artifacts.utils.plugin_auth import apply_auth_result
+from artifacts.utils.plugin_auth import apply_auth_result, validate_plugin_auth
 from artifacts.utils.registry_utils import calculate_sha256_digest
+from auth.basic import validate_basic_auth
 from auth.credentials import validate_credentials
 
 from auth.auth_context import get_authenticated_user, get_authenticated_context, set_authenticated_context
 from flask import Blueprint, request, jsonify, make_response, abort
 
-from artifacts.plugins.npm.npm_auth import get_username_password, get_bearer_token, \
-    validate_npm_auth_token, generate_auth_token_for_write, delete_npm_token, generate_auth_token_for_read
+from artifacts.plugins.npm.npm_auth import \
+    npm_token_auth, delete_npm_token, get_username_password, npm_username_auth
 from artifacts.plugins.npm.npm_models import create_and_save_new_token_for_user
 
 from util.cache import no_cache
@@ -46,6 +47,7 @@ def encode_basic_auth(username, password):
 
 @bp.route('/-/user/org.couchdb.user:<user_id>', methods=['PUT'])
 @no_cache
+@validate_plugin_auth(npm_username_auth)
 def npm_login(user_id):
     """
     NPM login user
@@ -59,6 +61,7 @@ def npm_login(user_id):
 
 
 @bp.route('/-/user/token/<token>', methods=['DELETE'])
+@validate_plugin_auth(npm_token_auth)
 def logout(token):
     """
     logout a user
@@ -66,10 +69,6 @@ def logout(token):
     ref: https://docs.npmjs.com/cli/v7/commands/npm-logout
     ref: https://github.com/npm/registry/blob/master/docs/user/authentication.md#token-delete
     """
-
-    auth_result = validate_npm_auth_token(token)
-    if not auth_result:
-        return jsonify({'error': 'Invalid token'}), 401
 
     error = delete_npm_token(token)
     if not error:
@@ -79,6 +78,7 @@ def logout(token):
 
 
 @bp.route('/<path:package>', methods=['PUT'])
+@validate_plugin_auth(npm_token_auth)
 def npm_publish_package(package):
     logger.info(f'🔴🟣🔴🟣🔴🟣 PUT package {package}')
     try:
@@ -146,6 +146,7 @@ def npm_publish_package(package):
 
 
 @bp.route('/<path:package>', methods=['GET'])
+@validate_plugin_auth(npm_token_auth)
 def npm_get_package(package):
     logger.info(f'🎁🎁🎁🎁 package {package} auth context {get_authenticated_context()}')
     try:
@@ -167,7 +168,8 @@ def npm_get_package(package):
 
 
 @bp.route('/download/<path:namespace>/<path:package_name>/<path:version>', methods=['GET'])
-def npm_get_package_tarball(namespace, package_name, version):
+@validate_plugin_auth(npm_token_auth)
+def npm_get_package_tarball(auth_result, namespace, package_name, version):
     # get the package
     namespace = namespace.replace('@', '')
     logger.info(f'🎁🎁🎁🎁 package {namespace}/{package_name}/{version} auth context {get_authenticated_context()}')
