@@ -11,15 +11,14 @@ from artifacts.utils.plugin_auth import apply_auth_result, validate_plugin_auth,
 from artifacts.utils.registry_utils import calculate_sha256_digest, QuayRegistryClient, OCILayer, OCIArtifactManifest, \
     artifact_plugin_validate_basic_auth
 from auth.credentials import validate_credentials
-from auth.validateresult import ValidateResult, AuthKind
 
-bp = Blueprint("python", __name__)
+bp = Blueprint(PLUGIN_NAME, __name__)
 logger = logging.getLogger(__name__)
 
 
 @bp.route('/ping')
 def ping():
-    return jsonify({'ok': 'test'}), 200
+    return jsonify({'ok': PLUGIN_NAME}), 200
 
 
 @bp.route('/+login', methods=['POST'])
