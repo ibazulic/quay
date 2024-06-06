@@ -1,20 +1,17 @@
-import base64
 import json
 import logging
-from pprint import pprint
 
 from artifacts.plugins.npm import PLUGIN_NAME
 from artifacts.plugins.npm.npm_utils import parse_package_tarball, get_package_list, check_valid_package_name, \
     InvalidPackageNameError, parse_package_metadata, get_package_tarball, quayRegistryClient
 from artifacts.utils.plugin_auth import apply_auth_result, validate_plugin_auth, generate_auth_token_for_write
-from artifacts.utils.registry_utils import calculate_sha256_digest
-from auth.credentials import validate_credentials
+from artifacts.utils.registry_utils import calculate_sha256_digest, is_success
 
-from auth.auth_context import get_authenticated_user, get_authenticated_context, set_authenticated_context
+from auth.auth_context import get_authenticated_user, get_authenticated_context
 from flask import Blueprint, request, jsonify, make_response, abort
 
 from artifacts.plugins.npm.npm_auth import \
-    npm_token_auth, delete_npm_token, get_username_password, npm_username_auth
+    npm_token_auth, delete_npm_token, npm_username_auth
 from artifacts.plugins.npm.npm_models import create_and_save_new_token_for_user
 
 from util.cache import no_cache
@@ -45,9 +42,6 @@ def npm_login(auth_result, user_id):
     NPM login user
     ref: https://github.com/npm/registry/blob/master/docs/user/authentication.md#login
     """
-    username, password = get_username_password()
-    auth_result, _auth_kind = validate_credentials(username, password)
-    apply_auth_result(auth_result)
     token = create_and_save_new_token_for_user(get_authenticated_user())
     return make_response(jsonify({"token": token}), 201)
 
@@ -61,7 +55,6 @@ def logout(auth_result, token):
     ref: https://docs.npmjs.com/cli/v7/commands/npm-logout
     ref: https://github.com/npm/registry/blob/master/docs/user/authentication.md#token-delete
     """
-
     error = delete_npm_token(token)
     if not error:
         return jsonify({'ok': 'Logged out'}), 201
@@ -72,13 +65,11 @@ def logout(auth_result, token):
 @bp.route('/<path:package>', methods=['PUT'])
 @validate_plugin_auth(npm_token_auth)
 def npm_publish_package(auth_result, package):
-    logger.info(f'🔴🟣🔴🟣🔴🟣 PUT package {package}')
     try:
         check_valid_package_name(package)
     except InvalidPackageNameError as e:
         return jsonify({'error': str(e)}), 400
 
-    logger.info(f'🔴 package {package} auth context {get_authenticated_context()}')
     package_data = request.get_json()
     package_name = package_data.get('name')
     package_versions = package_data.get('versions')
@@ -95,7 +86,6 @@ def npm_publish_package(auth_result, package):
 
     # scope request to upload package
     grant_token = generate_auth_token_for_write(auth_result, namespace, repo_name)
-    logger.info(f'🔴🟣🔴🟣🔴🟣 grant_token {grant_token}')
 
     # upload config
     data = parse_package_tarball(package_data)
@@ -109,15 +99,13 @@ def npm_publish_package(auth_result, package):
     metadata_json = json.dumps(metadata)
     metadata_digest = calculate_sha256_digest(metadata_json.encode('utf-8'))
     response = quayRegistryClient.upload_artifact_blob(namespace, repo_name, metadata_json, metadata_digest, grant_token)
-    # TODO: check if the response is good
+    if not is_success(response):
+        return jsonify({'error': 'Error uploading package metadata'}), 500
 
     data_digest = calculate_sha256_digest(data)
     response = quayRegistryClient.upload_artifact_blob(namespace, repo_name, data, data_digest, grant_token)
-
-    logger.info(f'🔴🟣🔴🟣🔴🟣 digest {data_digest}')
-    logger.info(f'🔴🟣🔴🟣🔴🟣 response {response}')
-
-    pprint(dict(response.headers))
+    if is_success(response):
+        return jsonify({'error': 'Error uploading package'}), 500
 
     # create manifest
     manifest = quayRegistryClient.create_oci_artifact_manifest(
@@ -129,18 +117,12 @@ def npm_publish_package(auth_result, package):
         config_length=len(metadata),
     )
 
-    logger.info(f'🔴🟣🔴🟣🔴🟣 manifest {manifest}')
-
-    response = quayRegistryClient.upload_oci_artifact_manifest(namespace, repo_name, manifest, repo_tag, grant_token)
-    logger.info(f'🔴🟣🔴🟣🔴🟣 manifest response {response} {response.data}')
-    # TODO: check if the response is good
-    return jsonify({'ok': 'Package published'}), 200
+    return quayRegistryClient.upload_oci_artifact_manifest(namespace, repo_name, manifest, repo_tag, grant_token)
 
 
 @bp.route('/<path:package>', methods=['GET'])
 @validate_plugin_auth(npm_token_auth)
 def npm_get_package(auth_result, package):
-    logger.info(f'🎁🎁🎁🎁 package {package} auth context {get_authenticated_context()}')
     try:
         check_valid_package_name(package)
     except InvalidPackageNameError as e:
@@ -164,8 +146,4 @@ def npm_get_package(auth_result, package):
 def npm_get_package_tarball(auth_result, namespace, package_name, version):
     # get the package
     namespace = namespace.replace('@', '')
-    logger.info(f'🎁🎁🎁🎁 package {namespace}/{package_name}/{version} auth context {get_authenticated_context()}')
-    tarball = get_package_tarball(auth_result, namespace, package_name, version)
-    r = make_response(tarball)
-    r.headers.set('Content-Type', 'application/octet-stream')
-    return r
+    return get_package_tarball(auth_result, namespace, package_name, version)

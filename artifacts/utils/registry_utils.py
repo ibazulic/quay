@@ -106,6 +106,10 @@ def calculate_sha256_digest(data):
     return f'sha256:{digest}'
 
 
+def is_success(response):
+    return response.status_code in [200, 201]
+
+
 def artifact_plugin_validate_basic_auth():
     """
     Basic auth with username and password

@@ -1,7 +1,6 @@
 import base64
 import json
 import logging
-import pprint
 
 from artifacts.plugins.npm import PLUGIN_NAME
 from artifacts.utils.plugin_auth import generate_auth_token_for_read
@@ -10,6 +9,7 @@ from artifacts.utils.registry_utils import RegistryError, QuayRegistryClient
 logger = logging.getLogger(__name__)
 
 quayRegistryClient = QuayRegistryClient(PLUGIN_NAME)
+
 
 def parse_package_tarball(npm_post_data):
     attachments = npm_post_data.get('_attachments', {})
@@ -24,7 +24,6 @@ def parse_package_tarball(npm_post_data):
 
 
 def parse_package_metadata(npm_post_data):
-    logger.info(f'🟢 🟢 🟢 🟢 🟢 npm_post_data {npm_post_data}')
     versions = npm_post_data.get('versions', {})
     if not versions:
         return None
@@ -33,10 +32,9 @@ def parse_package_metadata(npm_post_data):
     metadata = versions.get(version)
     # update tarball location
     # TODO: catch exception
-    logger.info(f'🤌🤌🤌🤌🤌 tarball {metadata["dist"]["tarball"]}')
-    metadata['dist']['tarball'] = f'http://localhost:8080/artifacts/npm/download/{metadata["name"]}/{version}'
+    download_url = f'{quayRegistryClient.scheme}://{quayRegistryClient.hostname}/artifacts/npm/download/{metadata["name"]}/{version}'
+    metadata['dist']['tarball'] = download_url
 
-    logger.info(f'🟢 🟢 🟢 🟢 🟢 metadata {metadata} version {version} versions {versions}')
     return metadata
 
 
@@ -66,7 +64,6 @@ def get_package_list(auth_result, namespace, package_name):
     tags = quayRegistryClient.get_all_tags(namespace, package_name, grant_token)
     package_list = {}
     for tag in tags:
-        logger.info(f'🟢 tag {tag}')
         metadata = get_package_metadata(namespace, package_name, tag, grant_token)
         package_list[tag] = metadata
 
@@ -78,17 +75,12 @@ def get_package_tarball(auth_result, namespace, package_name, package_version):
     grant_token = generate_auth_token_for_read(auth_result, namespace, package_name)
     response = quayRegistryClient.get_oci_manifest_by_tag(namespace, package_name, package_version, grant_token)
     if response.status_code != 200:
-        raise RegistryError('Error fetching manifest')
+        return response
 
     manifest = response.json
     data_digest = manifest.get('layers')[0].get('digest')
     response = quayRegistryClient.get_oci_blob(namespace, package_name, data_digest, grant_token)
-    if response.status_code != 200:
-        raise RegistryError('Error fetching blob')
-
-    logger.info(f'🟢 🟢 🟢 🟢 🟢 tarball\n{response.data}')
-
-    return response.data
+    return response
 
 
 class InvalidPackageNameError(Exception):
@@ -105,5 +97,3 @@ def check_valid_package_name(package_name):
 
     if not package_name.startswith('@'):
         raise InvalidPackageNameError('Invalid package name')
-
-    # check if the package name is valid
