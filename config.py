@@ -901,3 +901,5 @@ class DefaultConfig(ImmutableConfig):
     # Disable pushes while allowing other registry operations.
     # Defaults to "False".
     DISABLE_PUSHES = False
+
+    FEATURE_PLUGIN_SUPPORT = True

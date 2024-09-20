@@ -1124,3 +1124,18 @@ def csrf_token():
     token = generate_csrf_token()
     response = jsonify({"csrf_token": token})
     return response
+
+
+if features.PLUGIN_SUPPORT:
+    from artifacts import discover_plugins
+
+    found = discover_plugins()
+    for plugin in found.values():
+        route_name = "/" + plugin.name
+
+        @web.route(route_name, defaults={"path": ""})
+        @web.route(route_name + "/<path:path>", methods=["GET"])
+        @crossorigin(anonymous=False)
+        @no_cache
+        def plugin():
+            return index("")

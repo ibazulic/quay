@@ -51,6 +51,7 @@ from image.docker.schema2 import EMPTY_LAYER_BLOB_DIGEST, EMPTY_LAYER_SIZE
 from image.oci import (
     ADDITIONAL_LAYER_CONTENT_TYPES,
     ALLOWED_ARTIFACT_TYPES,
+    OCI_ARTIFACT_EMPTY_CONFIG_JSON,
     OCI_IMAGE_CONFIG_CONTENT_TYPE,
     OCI_IMAGE_LAYER_CONTENT_TYPES,
     OCI_IMAGE_MANIFEST_CONTENT_TYPE,
@@ -533,6 +534,7 @@ class OCIManifestBuilder(object):
         self.subject = None
         self.filesystem_layers = []
         self.annotations = {}
+        self.is_artifact = False
 
     def clone(self):
         cloned = OCIManifestBuilder()
@@ -597,18 +599,32 @@ class OCIManifestBuilder(object):
                 OCI_MANIFEST_DIGEST_KEY: str(layer.digest),
             }
 
-        manifest_dict = {
-            OCI_MANIFEST_VERSION_KEY: 2,
-            OCI_MANIFEST_MEDIATYPE_KEY: OCI_IMAGE_MANIFEST_CONTENT_TYPE,
-            # Config
-            OCI_MANIFEST_CONFIG_KEY: {
-                OCI_MANIFEST_MEDIATYPE_KEY: OCI_IMAGE_CONFIG_CONTENT_TYPE,
-                OCI_MANIFEST_SIZE_KEY: self.config.size,
-                OCI_MANIFEST_DIGEST_KEY: str(self.config.digest),
-            },
-            # Layers
-            OCI_MANIFEST_LAYERS_KEY: [_build_layer(layer) for layer in self.filesystem_layers],
-        }
+        if self.is_artifact:
+            manifest_dict = {
+                OCI_MANIFEST_VERSION_KEY: 2,
+                OCI_MANIFEST_MEDIATYPE_KEY: OCI_IMAGE_MANIFEST_CONTENT_TYPE,
+                # Config
+                OCI_MANIFEST_CONFIG_KEY: {
+                    OCI_MANIFEST_MEDIATYPE_KEY: OCI_ARTIFACT_EMPTY_CONFIG_JSON,
+                    OCI_MANIFEST_SIZE_KEY: self.config.size,
+                    OCI_MANIFEST_DIGEST_KEY: str(self.config.digest),
+                },
+                # Layers
+                OCI_MANIFEST_LAYERS_KEY: [_build_layer(layer) for layer in self.filesystem_layers],
+            }
+        else:
+            manifest_dict = {
+                OCI_MANIFEST_VERSION_KEY: 2,
+                OCI_MANIFEST_MEDIATYPE_KEY: OCI_IMAGE_MANIFEST_CONTENT_TYPE,
+                # Config
+                OCI_MANIFEST_CONFIG_KEY: {
+                    OCI_MANIFEST_MEDIATYPE_KEY: OCI_IMAGE_CONFIG_CONTENT_TYPE,
+                    OCI_MANIFEST_SIZE_KEY: self.config.size,
+                    OCI_MANIFEST_DIGEST_KEY: str(self.config.digest),
+                },
+                # Layers
+                OCI_MANIFEST_LAYERS_KEY: [_build_layer(layer) for layer in self.filesystem_layers],
+            }
 
         if self.annotations:
             manifest_dict[OCI_MANIFEST_ANNOTATIONS_KEY] = self.annotations

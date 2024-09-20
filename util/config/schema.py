@@ -1573,5 +1573,10 @@ CONFIG_SCHEMA = {
             "description": "Nginx read timeout for manifests endpoints used by pulls and pushes",
             "x-example": "5m",
         },
+        "FEATURE_PLUGIN_SUPPORT": {
+            "type": "boolean",
+            "description": "Enable plugin system for artifacts.",
+            "x-example": True,
+        },
     },
 }

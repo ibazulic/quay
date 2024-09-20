@@ -1,7 +1,7 @@
 from flask.testing import FlaskClient
 
 from data.registry_model import registry_model
-from endpoints.v2 import NameUnknown
+from endpoints.v2.errors import NameUnknown
 
 
 class BaseArtifactPlugin(object):
