@@ -31,6 +31,14 @@ enum visibilityType {
   PRIVATE = 'PRIVATE',
 }
 
+const artifactType =  {
+  'image': 'Container Image',
+  'npm': 'NPM',
+  'python': 'Python',
+  'ruby': 'Ruby',
+  'golang': 'Golang',
+}
+
 export default function CreateRepositoryModalTemplate(
   props: CreateRepositoryModalTemplateProps,
 ) {
@@ -39,6 +47,15 @@ export default function CreateRepositoryModalTemplate(
   }
   const [err, setErr] = useState<string>();
   const quayConfig = useQuayConfig();
+
+  // Check if plugin support is turned on
+  function chooseArtifactTypeEnabled() {
+    if(quayConfig?.features.PLUGIN_SUPPORT) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
   const [currentOrganization, setCurrentOrganization] = useState({
     // For org scoped view, the name is set current org and for Repository list view,
@@ -50,6 +67,11 @@ export default function CreateRepositoryModalTemplate(
       : null,
     isDropdownOpen: false,
   });
+
+  const [curerntArtifact, setCurrentArtifact] = useState({
+    name: artifactType["image"],
+    isDropdownOpen: false,
+  })
 
   const {createRepository} = useCreateRepository({
     onSuccess: () => {
@@ -71,6 +93,7 @@ export default function CreateRepositoryModalTemplate(
   });
 
   const [repoVisibility, setrepoVisibility] = useState(visibilityType.PUBLIC);
+  const [isOpen, setIsOpen] = useState(false);
 
   const nameInputRef = useRef();
 
@@ -121,6 +144,13 @@ export default function CreateRepositoryModalTemplate(
     }));
   };
 
+  const handleArtifactSelection = (e, value)  =>  {
+    setCurrentArtifact((prevState) => ({
+      name: value,
+      isDropdownOpen: !prevState.isDropdownOpen,
+    }));
+  };
+
   // namespace list includes both the orgs list and the user namespace
   const namespaceSelectionList = () => {
     const userSelection = (
@@ -132,6 +162,14 @@ export default function CreateRepositoryModalTemplate(
 
     return [userSelection, ...orgsSelectionList];
   };
+
+  // artifact type list
+  const artifactTypeList = () => {
+    const artifactList = Object.keys(artifactType).map((property) => (
+      <SelectOption key={property} name={artifactType[property]}></SelectOption>
+    ));
+    return artifactList;
+  }
 
   return (
     <Modal
@@ -218,6 +256,32 @@ export default function CreateRepositoryModalTemplate(
                 </FormHelperText>
               )}
             </FormGroup>
+          </FlexItem>
+          <FlexItem>
+            <Select
+              aria-label='Artifact Kind'
+              isOpen={curerntArtifact.isDropdownOpen}
+              selected={curerntArtifact.name || 'Select artifact type'}
+              onSelect={handleArtifactSelection}
+              toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+                <MenuToggle
+                  ref={toggleRef}
+                  onClick={() =>
+                    setCurrentArtifact((prevState) => ({
+                      ...prevState,
+                      isDropdownOpen: !prevState.isDropdownOpen,
+                    }))
+                  }
+                  isExpanded={curerntArtifact.isDropdownOpen}
+                  isDisabled={chooseArtifactTypeEnabled()}
+                >
+                  {curerntArtifact.name}
+                </MenuToggle>
+              )}
+              shouldFocusToggleOnSelect
+            >
+              <SelectList>{artifactTypeList()}</SelectList>
+            </Select>
           </FlexItem>
           <FlexItem>
             <FormGroup

@@ -3,7 +3,7 @@ import re
 from collections import namedtuple
 
 from cachetools.func import lru_cache
-from flask import jsonify, request, g
+from flask import g, jsonify, request
 
 import features
 from app import app, instance_keys, userevents, usermanager
@@ -77,8 +77,10 @@ def registry_auth_token(auth_result):
     auth_header = request.headers.get("authorization", "")
     auth_credentials_sent = bool(auth_header)
 
-    logger.info(f'🔴 🔴 🔴 🔴 auth_credentials_sent {auth_credentials_sent}, audience_param {audience_param}, '
-                f'scope_params {scope_params}')
+    logger.info(
+        f"🔴 🔴 🔴 🔴 auth_credentials_sent {auth_credentials_sent}, audience_param {audience_param}, "
+        f"scope_params {scope_params}"
+    )
     token = generate_registry_jwt(auth_result, auth_credentials_sent, audience_param, scope_params)
 
     return jsonify({"token": token})
@@ -200,6 +202,7 @@ def _get_tuf_root(repository_ref, namespace, reponame):
 
 def validate_repository_name(namespace, reponame, namespace_and_repo):
     # Ensure that we are never creating an invalid repository.
+
     if features.EXTENDED_REPOSITORY_NAMES:
         if not REPOSITORY_NAME_EXTENDED_REGEX.match(reponame):
             logger.debug("Found invalid repository name in auth flow: %s", reponame)
@@ -244,7 +247,11 @@ def ensure_repository_exists(user, namespace, reponame):
     if not namespace_ref and not app.config.get("CREATE_NAMESPACE_ON_PUSH", False):
         raise Unsupported(message="Unknown namespace")
 
-    if not repository_ref and features.RESTRICTED_USERS and usermanager.is_restricted_user(user.username):
+    if (
+        not repository_ref
+        and features.RESTRICTED_USERS
+        and usermanager.is_restricted_user(user.username)
+    ):
         raise Unsupported(message="Restricted users cannot create repositories")
 
     if not repository_ref and not CreateRepositoryPermission(namespace).can():
@@ -263,9 +270,12 @@ def ensure_repository_exists(user, namespace, reponame):
             )
 
         if not repository_ref:
-            visibility = "private" if app.config.get("CREATE_PRIVATE_REPO_ON_PUSH", True) else "public"
-            found = model.repository.get_or_create_repository(namespace, reponame, get_authenticated_user(),
-                                                              visibility=visibility)
+            visibility = (
+                "private" if app.config.get("CREATE_PRIVATE_REPO_ON_PUSH", True) else "public"
+            )
+            found = model.repository.get_or_create_repository(
+                namespace, reponame, get_authenticated_user(), visibility=visibility
+            )
 
             repository_ref = RepositoryReference.for_repo_obj(found)
 
@@ -278,7 +288,7 @@ def ensure_repository_exists(user, namespace, reponame):
 
 def _authorize_or_downscope_request(scope_param, has_valid_auth_context):
     # TODO: The complexity of this function is difficult to follow and maintain. Refactor/Cleanup.
-    logger.info(f'🟣🟣🟣🟣scope_param {scope_param}, has_valid_auth_context {has_valid_auth_context}')
+    logger.info(f"🟣🟣🟣🟣scope_param {scope_param}, has_valid_auth_context {has_valid_auth_context}")
     if len(scope_param) == 0:
         if not has_valid_auth_context:
             # In this case, we are doing an auth flow, and it's not an anonymous pull.
@@ -302,7 +312,9 @@ def _authorize_or_downscope_request(scope_param, has_valid_auth_context):
 
     lib_namespace = app.config["LIBRARY_NAMESPACE"]
     namespace, reponame = parse_namespace_repository(namespace_and_repo, lib_namespace)
-    logger.info(f'🟣🟣🟣🟣 namespace {namespace}, reponame {reponame}, registry_and_repo {registry_and_repo}')
+    logger.info(
+        f"🟣🟣🟣🟣 namespace {namespace}, reponame {reponame}, registry_and_repo {registry_and_repo}"
+    )
 
     validate_repository_name(namespace, reponame, namespace_and_repo)
     ensure_namespace_enabled(namespace)
@@ -319,7 +331,8 @@ def _authorize_or_downscope_request(scope_param, has_valid_auth_context):
         if has_valid_auth_context:
             user = get_authenticated_user()
             logger.info(
-                f'🟣🟣🟣🟣 user {user} can create repo {CreateRepositoryPermission(namespace).can()} identity {g.identity}')
+                f"🟣🟣🟣🟣 user {user} can create repo {CreateRepositoryPermission(namespace).can()} identity {g.identity}"
+            )
 
             # Lookup the repository. If it exists, make sure the entity has modify
             # permission. Otherwise, make sure the entity has create permission.
@@ -327,6 +340,10 @@ def _authorize_or_downscope_request(scope_param, has_valid_auth_context):
             repository_ref = ensure_repository_exists(user, namespace, reponame)
             if not ModifyRepositoryPermission(namespace, reponame).can():
                 raise Unsupported(message="No permission to modify repository")
+
+            # Check if we're trying to push an OCI image to an artifacts repository
+            if repository_ref.name.startswith("artifacts"):
+                raise Unsupported(message="Cannot push to artifacts repository")
 
             # Check for different repository states.
             if repository_ref.state == RepositoryState.NORMAL:
@@ -371,10 +388,10 @@ def _authorize_or_downscope_request(scope_param, has_valid_auth_context):
             global_readonly_superuser = usermanager.is_global_readonly_superuser(user.username)
 
         if (
-                ReadRepositoryPermission(namespace, reponame).can()
-                or can_pullthru
-                or repo_is_public
-                or global_readonly_superuser
+            ReadRepositoryPermission(namespace, reponame).can()
+            or can_pullthru
+            or repo_is_public
+            or global_readonly_superuser
         ):
             final_actions.append("pull")
         else:

@@ -2,6 +2,9 @@ OCI_IMAGE_MANIFEST_CONTENT_TYPE = "application/vnd.oci.image.manifest.v1+json"
 OCI_IMAGE_INDEX_CONTENT_TYPE = "application/vnd.oci.image.index.v1+json"
 OCI_IMAGE_CONFIG_CONTENT_TYPE = "application/vnd.oci.image.config.v1+json"
 
+OCI_ARTIFACT_EMPTY_CONFIG_LAYER = "{}"
+OCI_ARTIFACT_EMPTY_CONFIG_TYPE = "application/vnd.oci.empty.v1+json"
+
 OCI_IMAGE_TAR_LAYER_CONTENT_TYPE = "application/vnd.oci.image.layer.v1.tar"
 OCI_IMAGE_TAR_GZIP_LAYER_CONTENT_TYPE = "application/vnd.oci.image.layer.v1.tar+gzip"
 OCI_IMAGE_TAR_ZSTD_LAYER_CONTENT_TYPE = "application/vnd.oci.image.layer.v1.tar+zstd"
@@ -30,12 +33,10 @@ OCI_IMAGE_LAYER_CONTENT_TYPES = (
 
 OCI_CONTENT_TYPES = {OCI_IMAGE_MANIFEST_CONTENT_TYPE, OCI_IMAGE_INDEX_CONTENT_TYPE}
 
-ALLOWED_ARTIFACT_TYPES = [OCI_IMAGE_CONFIG_CONTENT_TYPE]
+ALLOWED_ARTIFACT_TYPES = [OCI_IMAGE_CONFIG_CONTENT_TYPE, OCI_ARTIFACT_EMPTY_CONFIG_TYPE]
 ADDITIONAL_LAYER_CONTENT_TYPES = []
 
 # Empty config layer
-EMPTY_CONFIG_JSON = "{}"
-EMPTY_CONFIG_MEDIATYPE = "application/vnd.oci.empty.v1+json"
 
 
 def register_artifact_type(artifact_config_type, artifact_layer_types):
