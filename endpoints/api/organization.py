@@ -340,7 +340,7 @@ class Organization(ApiResource):
             or allow_if_global_readonly_superuser()
             or (features.SUPERUSERS_FULL_ACCESS and allow_if_superuser())
         ):
-            has_syncing = features.TEAM_SYNCING and bool(authentication.federated_service)
+            has_syncing = bool(authentication.team_sync_service)
             teams = model.team.get_teams_within_org(org, has_syncing)
 
         return org_view(org, teams)

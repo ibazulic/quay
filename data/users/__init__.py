@@ -46,6 +46,39 @@ def get_federated_service_name(authentication_type):
 LDAP_CERT_FILENAME = "ldap.crt"
 
 
+def _get_oidc_users(oauth_login):
+    """
+    Builds an OIDCUsers class from the first configured OIDC provider, or None.
+    """
+    if not oauth_login:
+        return None
+
+    for service in oauth_login.services:
+        if isinstance(service, OIDCLoginService):
+            config = service.config
+            client_id = config.get("CLIENT_ID", None)
+            client_secret = config.get("CLIENT_SECRET", None)
+            oidc_server = config.get("OIDC_SERVER", None)
+            service_name = config.get("SERVICE_NAME", None)
+            login_scopes = config.get("LOGIN_SCOPES", None)
+            preferred_group_claim_name = config.get("PREFERRED_GROUP_CLAIM_NAME", None)
+            oidc_superuser_group = config.get("SUPERUSER_GROUP", None)
+            oidc_global_readonly_superuser_group = config.get(
+                "GLOBAL_READONLY_SUPERUSER_GROUP", None
+            )
+
+            return OIDCUsers(
+                client_id,
+                client_secret,
+                oidc_server,
+                service_name,
+                login_scopes,
+                preferred_group_claim_name,
+                oidc_superuser_group=oidc_superuser_group,
+                oidc_global_readonly_superuser_group=oidc_global_readonly_superuser_group,
+            )
+
+
 def get_users_handler(config, _, override_config_dir, oauth_login):
     """
     Returns a users handler for the authentication configured in the given config object.
@@ -161,30 +194,9 @@ def get_users_handler(config, _, override_config_dir, oauth_login):
         return AppTokenInternalAuth()
 
     if authentication_type == "OIDC" and oauth_login:
-        for service in oauth_login.services:
-            if isinstance(service, OIDCLoginService):
-                config = service.config
-                client_id = config.get("CLIENT_ID", None)
-                client_secret = config.get("CLIENT_SECRET", None)
-                oidc_server = config.get("OIDC_SERVER", None)
-                service_name = config.get("SERVICE_NAME", None)
-                login_scopes = config.get("LOGIN_SCOPES", None)
-                preferred_group_claim_name = config.get("PREFERRED_GROUP_CLAIM_NAME", None)
-                oidc_superuser_group = config.get("SUPERUSER_GROUP", None)
-                oidc_global_readonly_superuser_group = config.get(
-                    "GLOBAL_READONLY_SUPERUSER_GROUP", None
-                )
-
-                return OIDCUsers(
-                    client_id,
-                    client_secret,
-                    oidc_server,
-                    service_name,
-                    login_scopes,
-                    preferred_group_claim_name,
-                    oidc_superuser_group=oidc_superuser_group,
-                    oidc_global_readonly_superuser_group=oidc_global_readonly_superuser_group,
-                )
+        users = _get_oidc_users(oauth_login)
+        if users is not None:
+            return users
 
     raise RuntimeError("Unknown authentication type: %s" % authentication_type)
 
@@ -193,6 +205,7 @@ class UserAuthentication(object):
     def __init__(self, app=None, config_provider=None, override_config_dir=None, oauth_login=None):
         self.secret_key = None
         self.app = app
+        self.oauth_login = oauth_login
         if app is not None:
             self.state = self.init_app(app, config_provider, override_config_dir, oauth_login)
         else:
@@ -252,6 +265,40 @@ class UserAuthentication(object):
         If none, should return None.
         """
         return self.state.federated_service
+
+    @property
+    def team_sync_backend(self):
+        """
+        Returns the object that handles team syncing, or None if the team sync
+        is unavailable.
+
+        For auth systems that are federated (such as LDAP, Keystone and OIDC), this
+        object is the federated system itself. Under database auth, it is the
+        OIDCUsers object built from the OIDC login service. This is required to
+        enable team syncing of OIDC groups even under internal database authentication.
+        """
+        if self.state is None or not features.TEAM_SYNCING:
+            return None
+
+        if self.state.federated_service:
+            return self.state
+
+        if self.app.config.get("AUTHENTICATION_TYPE", "Database") != "Database":
+            return None
+
+        oidc_users = _get_oidc_users(self.oauth_login)
+        if oidc_users is None or not oidc_users._preferred_group_claim_name:
+            return None
+
+        return oidc_users
+
+    @property
+    def team_sync_service(self):
+        """
+        Returns the backend service that will be used to set up team syncing.
+        """
+        backend = self.team_sync_backend
+        return backend.federated_service if backend is not None else None
 
     @property
     def requires_distinct_cli_password(self):
@@ -376,7 +423,7 @@ class UserAuthentication(object):
             else:
                 password = decrypted
 
-        (result, err_msg) = self.state.verify_and_link_user(username_or_email, password)
+        result, err_msg = self.state.verify_and_link_user(username_or_email, password)
         if not result:
             return (result, err_msg)
 

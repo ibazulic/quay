@@ -58,7 +58,7 @@ def permission_view(permission):
 
 
 def try_accept_invite(code, user):
-    (team, inviter) = model.team.confirm_team_invite(code, user)
+    team, inviter = model.team.confirm_team_invite(code, user)
 
     model.notification.delete_matching_notifications(
         user, "org_team_invite", org=team.organization.username
@@ -153,8 +153,9 @@ def disallow_for_synced_team(except_robots=False):
     def inner(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
-            # Team syncing can only be enabled if we have a federated service.
-            if features.TEAM_SYNCING and authentication.federated_service:
+            # Team syncing can be enabled on federated services and database supported by
+            # an external OIDC setup.
+            if authentication.federated_service:
                 orgname = kwargs["orgname"]
                 teamname = kwargs["teamname"]
                 if model.team.get_team_sync_information(orgname, teamname):
@@ -305,16 +306,22 @@ class OrganizationTeamSyncing(ApiResource):
             config = request.get_json()
 
             # Ensure that the specified config points to a valid group.
-            status, err = authentication.check_group_lookup_args(config)
+            backend = authentication.team_sync_backend
+            if backend is None:
+                raise InvalidRequest("Team syncing is not available")
+
+            # ensure that the specified config points to a valid group
+            status, err = backend.check_group_lookup_args(config)
             if not status:
                 raise InvalidRequest("Could not sync to group: %s" % err)
 
-            # Set the team's syncing config.
-            model.team.set_team_syncing(team, authentication.federated_service, config)
+            # set the team's syncing config
+            model.team.set_team_syncing(team, backend.federated_service, config)
             log_action("enable_team_sync", orgname, {"team": teamname})
 
-            if app.config["AUTHENTICATION_TYPE"] == "OIDC":
-                # delete existing team members, team membership will be synced with OIDC group
+            if backend.federated_service == "oidc":
+                # delete existing team members, team membership will be synced
+                # via the OIDC group
                 model.team.delete_all_team_members(team)
 
             return team_view(orgname, team)
@@ -384,13 +391,14 @@ class TeamMemberList(ApiResource):
                 "can_edit": edit_permission.can(),
             }
 
-            if features.TEAM_SYNCING and authentication.federated_service:
+            sync_service = authentication.team_sync_service
+            if sync_service:
                 if _syncing_setup_allowed(orgname):
                     data["can_sync"] = {
-                        "service": authentication.federated_service,
+                        "service": sync_service,
                     }
 
-                    data["can_sync"].update(authentication.service_metadata())
+                    data["can_sync"].update(authentication.team_sync_backend.service_metadata())
 
                 sync_info = model.team.get_team_sync_information(orgname, teamname)
                 if sync_info is not None:
@@ -630,7 +638,7 @@ class TeamMemberInvite(ApiResource):
         """
         Delete an existing invitation to join a team.
         """
-        (team, inviter) = model.team.delete_team_invite(code, user_obj=get_authenticated_user())
+        team, inviter = model.team.delete_team_invite(code, user_obj=get_authenticated_user())
 
         model.notification.delete_matching_notifications(
             get_authenticated_user(), "org_team_invite", code=code
